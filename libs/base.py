@@ -114,7 +114,7 @@ class BaseClient:
         ding_url = 'https://oapi.dingtalk.com/robot/send'
         access_token = os.environ.get('DING_TOKEN')
         _timestamp = str(round(time.time() * 1000))
-        secret = 'SEC25b6b9851cc21443c8b020dc03562a199e3cfecd502062861fc3d2c1ae226a8d'
+        secret = 'SEC21c976f7bc4cd043739d166df768c692d15aff445062dd321d0f57a97b58b00e'
         secret_enc = secret.encode('utf-8')
         string_to_sign_enc = '{}\n{}'.format(_timestamp, secret).encode('utf-8')
         hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
