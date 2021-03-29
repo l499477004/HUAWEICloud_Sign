@@ -1,5 +1,2 @@
 requests~=2.24.0
 pyppeteer==0.2.2
-redis
-pymongo
-dnspython
