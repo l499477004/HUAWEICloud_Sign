@@ -880,7 +880,7 @@ class BaseHuaWei(BaseClient):
     
     # HDC flag 读书签到 3月23日-4月20日，累计29天
     async def hdc_read(self):
-        await self.page.goto('https://bbs.huaweicloud.com/forum/thread-115618-1-1.html', {'waitUntil': 'load'})
+        await self.page.goto('https://bbs.huaweicloud.com/forum/thread-117322-1-1.html', {'waitUntil': 'load'})
         await self.page.waitForSelector('#fastpostsubmit')
         content = '签到，今天完成了一小时读书的Flag!'
         await self.page.evaluate(
