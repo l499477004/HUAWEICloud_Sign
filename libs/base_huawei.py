@@ -865,48 +865,4 @@ class BaseHuaWei(BaseClient):
         # await self.page.click('#fastpostsubmit')
         # await asyncio.sleep(5)
         # HDC 签到 3月1日-3月31日 少4天
-    async def hdc_pre_sign(self):
-        utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
-        d = int(utc_dt.astimezone(timezone(timedelta(hours=8))).strftime('%d'))
-        num = d-4
-        await self.page.goto('https://bbs.huaweicloud.com/forum/thread-110201-1-1.html', {'waitUntil': 'load'})
-        await self.page.waitForSelector('#fastpostsubmit')
-        content = 'day（'+str(num)+'）：2021 HDC预热签到+又是新的一天，继续期待华为HDC大会的到来，也希望今年的HDC上有让人耳目一新的内容和知识，一起加油！'
-        await self.page.evaluate(
-            '''() =>{ ue.setContent('<p>%s</p>'); }''' % content)
-        await asyncio.sleep(1)
-        await self.page.click('#fastpostsubmit')
-        await asyncio.sleep(30)
     
-    # HDC flag 读书签到 3月23日-4月20日，累计29天
-    async def hdc_read(self):
-        await self.page.goto('https://bbs.huaweicloud.com/forum/thread-115618-1-1.html', {'waitUntil': 'load'})
-        await self.page.waitForSelector('#fastpostsubmit')
-        content = '签到，今天完成了一小时读书的Flag!'
-        await self.page.evaluate(
-            '''() =>{ ue.setContent('<p>%s</p>'); }''' % content)
-        await asyncio.sleep(1)
-        await self.page.click('#fastpostsubmit')
-        await asyncio.sleep(30)
-    
-    # 【我要去HDC2021①】口令盖楼，周边、码豆、门票每周送！ 活动时间：3月23日-4月20日
-    async def hdc_floor(self):
-        await self.page.goto('https://bbs.huaweicloud.com/forum/thread-115425-1-1.html', {'waitUntil': 'load'})
-        await self.page.waitForSelector('#fastpostsubmit')
-        # 3月23日-3月30日请选用以下口令回帖：
-        content = random.choice(
-                [
-                    '华为云IoT设备接入服务IoTDA（IoT Device Access）是华为云的物联网平台，提供海量设备连接上云、设备和云端双向消息通信、批量设备管理、远程控制和监控、OTA升级、设备联动规则等能力，并可将设备数据灵活流转到华为云其他服务，帮助物联网行业用户快速完成设备联网及行业应用集成。', 
-                    '华为云IoT设备发放 IoTDP通过设备发放服务，您可以轻松管理跨多区域海量设备的发放工作，实现单点发放管理，设备全球上线的业务目的。', 
-                    '华为云IoT全球SIM联接（Global SIM Link）提供无线蜂窝物联网流量和eSIM/vSIM按需选网，享受当地资费，为客户提供一点接入、全球可达的一站式流量管理服务。', 
-                    '华为云IoT数据分析服务IoTA基于物联网资产模型，整合IoT数据集成、清洗、存储、分析、可视化，为IoT数据开发者提供一站式服务，降低开发门槛，缩短开发周期，快速实现IoT数据价值变现。', 
-                    '华为轻量级操作系统 LiteOS，驱动万物感知、互联、智能，可广泛应用于面向个人、家庭和行业的物联网产品和解决方案。', 
-                    '华为开发者大会2021（Cloud）是华为面向ICT(信息与通信)领域全球开发者的年度旗舰活动。', 
-                    '华为云IoT致力于提供极简接入、智能化、安全可信等全栈全场景服务和开发、集成、托管、运营等一站式工具服务。', 
-                    '华为云IoT边缘（IoT Edge），是边缘计算在物联网行业的应用。IoT Edge 在靠近物或数据源头的边缘侧，融合网络、计算、存储、应用核心能力的开放平台，就近提供计算和智能服务，满足行业在实时业务、应用智能、安全与隐私保护等方面的基本需求。'
-                ])
-        await self.page.evaluate(
-            '''() =>{ ue.setContent('<p>%s</p>'); }''' % content)
-        await asyncio.sleep(1)
-        await self.page.click('#fastpostsubmit')
-        await asyncio.sleep(30)
