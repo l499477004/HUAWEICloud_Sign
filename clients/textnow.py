@@ -10,14 +10,14 @@ class TextNow(BaseClient):
         super().__init__()
         self.url = 'https://www.textnow.com/login'
 
-    async def handler(self, username, password, **kwargs):
-        self.logger.info(f'{username} start login.')
-        await self.page.type('#txt-username', username, {'delay': 20})
+    async def handler(self, **kwargs):
+        self.logger.info(f'{self.username} start login.')
+        await self.page.type('#txt-username', self.username, {'delay': 20})
         await asyncio.sleep(1)
-        await self.page.type('#txt-password', password, {'delay': 20})
+        await self.page.type('#txt-password', self.password, {'delay': 20})
         await asyncio.sleep(1)
         await self.page.click('#btn-login')
-        await asyncio.sleep(5)
+        await asyncio.sleep(20)
 
         page_url = self.page.url
         if page_url != 'https://www.textnow.com/messaging':
@@ -25,7 +25,8 @@ class TextNow(BaseClient):
             for item in title_elements:
                 error_info = await (await item.getProperty('textContent')).jsonValue()
                 if error_info:
-                    self.logger.error(f'{username}: {error_info}')
+                    self.logger.error(f'{self.username}: {error_info}')
+            await self.send_photo(self.page, 'textnow')
             return
 
         self.logger.info('login success.')
@@ -44,7 +45,7 @@ class TextNow(BaseClient):
             self.logger.warning(e)
 
         await asyncio.sleep(1)
-        sms_content = '{}: {}'.format(username, time.strftime('%Y-%m-%d %H:%M:%S'))
+        sms_content = '{}: {}'.format(self.username, time.strftime('%Y-%m-%d %H:%M:%S'))
         await self.page.type('.newConversationTextField ', '3205001183')
         await asyncio.sleep(1)
         await self.page.click('#text-input')
