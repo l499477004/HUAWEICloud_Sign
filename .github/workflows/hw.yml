@@ -3,13 +3,14 @@ name: ZHYW
 on:
     workflow_dispatch:
     schedule:
-        - cron: "5 0,2,3,5,8,14,23 * * *"
+        - cron: "*/30 0-14 * * *"
     watch:
         types: [started]
 
 env:
   DING_TOKEN: ${{ secrets.DING_TOKEN }}
   DING_SECRET: ${{ secrets.DING_SECRET }}
+  FLAGURL: ${{ secrets.FLAGURL }}
 
 jobs:
   build:

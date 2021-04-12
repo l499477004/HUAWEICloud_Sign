@@ -3,13 +3,14 @@ name: HWPOST
 on:
     workflow_dispatch:
     schedule:
-        - cron: "10 5 * * *"
+        - cron: "40 4 * * *"
     watch:
         types: [started]
 
 env:
   DING_TOKEN: ${{ secrets.DING_TOKEN }}
   DING_SECRET: ${{ secrets.DING_SECRET }}
+  FLAGURL: ${{ secrets.FLAGURL }}
 
 jobs:
   build:
