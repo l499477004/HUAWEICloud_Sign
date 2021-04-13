@@ -5,6 +5,8 @@ import hmac
 import logging
 import os
 import time
+import urllib.parse
+import json
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 

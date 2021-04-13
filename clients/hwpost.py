@@ -31,29 +31,18 @@ class HuaWei(BaseHuaWei):
         await self.sign_task()
 
         utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
+        d = int(utc_dt.astimezone(timezone(timedelta(hours=8))).strftime('%d'))
         h = int(utc_dt.astimezone(timezone(timedelta(hours=8))).strftime('%H'))
         self.logger.info(f'now hours: {h}')
 
-        # 3月23日-4月20日
-        await self.hdc_floor()
-        # 3月23日-4月20日
-        await self.hdc_read()
-        # 3月1日-3月31日
-        await self.hdc_pre_sign()
-        # await self.sign_task()
-
-        # if h <= 12:
-        #     await self.check_project()
-        #     await self.start()
-        #     await self.add_address()
-
-        # if h >= 12:
-        #     await self.delete_project()
-        #     await self.delete_function()
-        #     await self.delete_api()
-        #     await self.delete_api_group()
-
-        # await self.init_account()
+        if d <= 20:
+            # 3月23日-4月20日
+            await self.hdc_floor()
+            # 3月23日-4月20日
+            await self.hdc_read()
+        
+        if d > 11:
+            await self.print_credit('请更新盖楼口令')
 
         return await self.get_credit()
 
