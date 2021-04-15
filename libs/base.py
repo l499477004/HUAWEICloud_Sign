@@ -5,15 +5,17 @@ import hmac
 import logging
 import os
 import time
-import urllib.parse
-import json
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 
 import requests
 from pyppeteer import launch, launcher
 from pyppeteer.browser import Browser
+from pyppeteer.network_manager import Request
 from pyppeteer.page import Page
+
+import urllib.parse
+import json
 
 
 class BaseClient:
@@ -65,7 +67,8 @@ class BaseClient:
     async def init(self, **kwargs):
         # launcher.DEFAULT_ARGS.remove('--enable-automation')
         self.browser = await launch(ignorehttpserrrors=True, headless=kwargs.get('headless', True),
-                                    args=['--disable-infobars', '--no-sandbox', '--start-maximized'])
+                                    args=['--disable-infobars', '--disable-web-security', '--no-sandbox',
+                                          '--start-maximized', '--disable-features=IsolateOrigins,site-per-process'])
         self.page = await self.browser.newPage()
         try:
             self.page.on('dialog', lambda dialog: asyncio.ensure_future(self.close_dialog(dialog)))
@@ -85,13 +88,17 @@ class BaseClient:
             """
         await self.page.evaluateOnNewDocument(js_text)
 
+        # await self.page.setRequestInterception(True)
+        # self.page.on('request', self.intercept_request)
+
         await self.page.goto(self.url, {'waitUntil': 'load'})
 
-    async def intercept_request(self, request):
-        if request.resourceType in ["image"]:
-            await request.abort()
-        else:
-            await request.continue_()
+    async def intercept_request(self, request: Request):
+        self.logger.info(request.url)
+        # if request.resourceType in ["image"]:
+        #     await request.abort()
+        # else:
+        await request.continue_()
 
     async def handler(self, **kwargs):
         raise RuntimeError
@@ -106,7 +113,7 @@ class BaseClient:
             await self.browser.close()
         except Exception as e:
             self.logger.debug(e)
-            os.system("kill -9 `ps -ef|grep chrome|grep -v grep|awk '{print $2}'`")
+            # os.system("kill -9 `ps -ef|grep chrome|grep -v grep|awk '{print $2}'`")
             self.browser = None
 
     @staticmethod
@@ -116,25 +123,6 @@ class BaseClient:
     @staticmethod
     async def accept_dialog(dialog):
         await dialog.accept()
-
-    @staticmethod
-    def send_message(text, title='Notice'):
-        ding_url = 'https://oapi.dingtalk.com/robot/send'
-        access_token = os.environ.get('DING_TOKEN')
-        _timestamp = str(round(time.time() * 1000))
-        secret = os.environ.get('DING_SECRET')
-        secret_enc = secret.encode('utf-8')
-        string_to_sign_enc = '{}\n{}'.format(_timestamp, secret).encode('utf-8')
-        hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
-        sign = base64.b64encode(hmac_code)
-        json_data = {'msgtype': 'markdown', 'markdown': {'text': text, 'title': title}}
-        params = {'access_token': access_token, 'timestamp': _timestamp, 'sign': sign}
-        return requests.post(ding_url, params=params, json=json_data).json()
-
-    @staticmethod
-    def get_bj_time():
-        utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
-        return utc_dt.astimezone(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
 
     @staticmethod
     def dingding_bot(content, title='HW'):
@@ -159,8 +147,28 @@ class BaseClient:
         else:
             print('推送失败！')
 
+    @staticmethod
+    def send_message(text, title='Notice'):
+        ding_url = 'https://oapi.dingtalk.com/robot/send'
+        access_token = os.environ.get('DING_TOKEN')
+        _timestamp = str(round(time.time() * 1000))
+        secret = 'SEC25b6b9851cc21443c8b020dc03562a199e3cfecd502062861fc3d2c1ae226a8d'
+        secret_enc = secret.encode('utf-8')
+        string_to_sign_enc = '{}\n{}'.format(_timestamp, secret).encode('utf-8')
+        hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+        sign = base64.b64encode(hmac_code)
+        json_data = {'msgtype': 'markdown', 'markdown': {'text': text, 'title': title}}
+        params = {'access_token': access_token, 'timestamp': _timestamp, 'sign': sign}
+        return requests.post(ding_url, params=params, json=json_data).json()
+
+    @staticmethod
+    def get_bj_time():
+        utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
+        return utc_dt.astimezone(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
+
     async def send_photo(self, page, title):
         file = f'/tmp/{int(time.time())}.png'
         await page.screenshot(path=file, fullPage=True)
         files = {'file': open(file, 'rb')}
-        requests.post(f'{self.api}/tg/photo', files=files, data={'chat_id': '-445291602', 'title': f'{self.username}->{title}'}, timeout=20)
+        requests.post(f'{self.api}/tg/photo', files=files,
+                      data={'chat_id': '-445291602', 'title': f'{self.username}->{title}'}, timeout=20)

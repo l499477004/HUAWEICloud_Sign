@@ -6,7 +6,6 @@ import time
 
 import requests
 
-from datetime import datetime, timezone, timedelta
 from libs.base import BaseClient
 
 name_map = {
@@ -83,12 +82,6 @@ class BaseHuaWei(BaseClient):
             await self.init_account()
         except Exception as e:
             self.logger.debug(e)
-
-    async def init(self, **kwargs):
-        if kwargs.get('iam'):
-            self.parent_user = os.environ.get('PARENT_USER', kwargs.get('parent'))
-            self.url = f'https://auth.huaweicloud.com/authui/login?id={self.parent_user}'
-        await super(BaseHuaWei, self).init(**kwargs)
 
     async def regular(self):
         await self.execute('regular-missions', '.daily-list li', 'feedback-', False, name_map)
@@ -189,7 +182,7 @@ class BaseHuaWei(BaseClient):
 
     async def print_credit(self, user_name):
         new_credit = await self.get_credit()
-        # self.logger.info(f'码豆: {new_credit}')
+        self.logger.info(f'码豆: {new_credit}')
         message = f'{user_name} -> {new_credit}'
         self.dingding_bot(message, '华为云码豆')
 
@@ -282,7 +275,7 @@ class BaseHuaWei(BaseClient):
             now_time = time.strftime('%Y-%m-%d %H:%M:%S')
             cmd = [
                 'cd /tmp',
-                'git config --global user.name "kkiki" && git config --global user.email "kkiki@gmail.com"',
+                'git config --global user.name "caoyufei" && git config --global user.email "atcaoyufei@gmail.com"',
                 f'git clone {self.git}',
                 'cd /tmp/crawler',
                 f'echo "{now_time}" >> time.txt',
@@ -602,53 +595,6 @@ class BaseHuaWei(BaseClient):
 
         await asyncio.sleep(15)
 
-    async def add_address(self):
-        page = await self.browser.newPage()
-        await page.setUserAgent(self.ua)
-        await page.setViewport({'width': self.width, 'height': self.height})
-        await page.goto('https://devcloud.huaweicloud.com/bonususer/home/managebonus', {'waitUntil': 'load'})
-
-        async def area(_page):
-            _items = await _page.querySelectorAll('#add-receive-area .devui-dropup')
-            index = [13, 1, 7]
-            for i, item in enumerate(_items):
-                await item.click()
-                await asyncio.sleep(1)
-                await page.click(f'.cdk-overlay-container .devui-dropdown-item:nth-child({index[i]})')
-                await asyncio.sleep(1)
-
-        try:
-            await asyncio.sleep(2)
-            """ await page.click('li#Add')
-            await asyncio.sleep(5)
-
-            items = await page.querySelectorAll('div.devui-table-view tbody tr')
-            if items and len(items):
-                await page.click('#edit-0')
-                await asyncio.sleep(1)
-            else:
-                await page.click('#add-adds')
-                await asyncio.sleep(1)
-                await page.type('#add-receive-name', '邹华')
-                await page.type('#add-receive-phone', '18664845253')
-                await page.click('#ifDefault .devui-toggle')
-
-            await page.evaluate(
-                '''() =>{ document.getElementById('add-receive-area-info').value = ''; }''')
-            await page.type('#add-receive-area-info', '雄楚大道28号-校友创新中心-MSC江宏中心-3楼壹佰网络')
-            await area(page)
-            await asyncio.sleep(1)
-
-            await page.click('#add-info .devui-checkbox')
-
-            await asyncio.sleep(1)
-            await page.click('#adds-dialog .devui-btn-stress')
-            await asyncio.sleep(2) """
-        except Exception as e:
-            self.logger.error(e)
-            self.logger.error(page.url)
-        finally:
-            await page.close()
 
     async def delete_function(self):
         page = await self.browser.newPage()
@@ -671,7 +617,7 @@ class BaseHuaWei(BaseClient):
                         await page.click('.ti3-modal-footer .ti3-btn-danger')
                         await asyncio.sleep(1)
                     except Exception as e:
-                        self.logger.error(e)
+                        self.logger.exception(e)
 
         await page.close()
         await asyncio.sleep(1)
@@ -864,24 +810,7 @@ class BaseHuaWei(BaseClient):
         # await asyncio.sleep(1)
         # await self.page.click('#fastpostsubmit')
         # await asyncio.sleep(5)
-        # HDC 签到 3月1日-3月31日 少4天
-    async def hdc_pre_sign(self):
-        utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
-        d = int(utc_dt.astimezone(timezone(timedelta(hours=8))).strftime('%d'))
-        num = d-4
-        await self.page.goto('https://bbs.huaweicloud.com/forum/thread-110201-1-1.html', {'waitUntil': 'load'})
-        await self.page.waitForSelector('#fastpostsubmit')
-        await self.page.evaluate('''() =>{ document.querySelector('#tabeditor-2').click(); }''')
-        await asyncio.sleep(1)
-        await self.page.click('#tabeditor-2')
-        content = 'day（'+str(num)+'）：2021 HDC预热签到+又是新的一天，继续期待华为HDC大会的到来，也希望今年的HDC上有让人耳目一新的内容和知识，一起加油！'
-        await self.page.type('.textarea', content, {'delay': 30})
-        # await self.page.evaluate('''() =>{ document.querySelector('.textarea').value = '%s'; }''' % content)
-        # await self.page.evaluate('''() =>{ document.querySelector('#mditorBox').value = '%s'; }''' % content)
-        await asyncio.sleep(1)
-        await self.page.click('#fastpostsubmit')
-        await asyncio.sleep(30)
-    
+
     # HDC flag 读书签到 3月23日-4月20日，累计29天
     async def hdc_read(self):
         await self.page.goto(os.environ.get('FLAGURL'), {'waitUntil': 'load'})
@@ -913,13 +842,30 @@ class BaseHuaWei(BaseClient):
         await self.page.click('#tabeditor-2')
         content = random.choice(
                 [
-                    '华为云IoT城市物联服务台助力鹰潭城市物联网产业竞争力提升，并着力打造城市名片。目前鹰潭网络建设、公共服务平台建设、示范应用建设领跑全国，已有30+类物联网应用，15万+设备接入。', 
-                    '华为云IoT携手兆邦基集团，基于园区物联网服务在深圳前海打造高效、智能、绿色、安全的科技大厦，实现楼宇设备全连接、数据全融合、场景全联动、调度全智能，有效节约能耗15%。', 
-                    '基于华为云IoT全栈云服务，武汉拓宝科技股份有限公司以云计算为核心实现海量数据的汇总处理，提升管理效率，随时随地接受火警，集中管理设备，大大降低了消防实施成本，设备无线联网，电池供电，不需布线，无线覆盖广，平台云端部署。', 
-                    '深圳市泛海三江电子股份有限公司基于华为云IoT全栈云服务，实现了消防从烟感探测器这个“哨兵”到消防中心的“指挥部”全程打通，从而突破消防产品单一性销售弊端，开拓全面的消防服务渠道。', 
-                    '基于华为云IoT提供的路网数字化服务，都汶高速采用摄像头、雷达等多维度数据采集，在不受雨雾遮挡影响、不新增路灯的情况下，实现全天候实时感知，并能对车辆位置、速度等进行准确检测，实现多种车路协同场景的安全预警。', 
-                    '基于华为云IoT设备接入管理服务，SKG实现了手机APP-按 摩仪-云端的智能交互。用户可通过APP选择适合的按 摩功能，还可从云端模式库中下载不同手法的软件包，一键下载、自动安装。', 
-                    '华为云&中创瀚维携手打造了以自动割胶系统为核心的智慧胶园，每棵胶树上配置自动割胶机，通过云端统一管控，并将割胶机的精准机械仿形与云端实时感知控制相结合，实现对不同形状胶树的标准0.01mm厚度的精准割胶。'
+                    '华为开发者大会2021（Cloud）是华为面向ICT(信息与通信)领域全球开发者的年度旗舰活动。', 
+                    '华为云IoT致力于提供极简接入、智能化、安全可信等全栈全场景服务和开发、集成、托管、运营等一站式工具服务。', 
+                    '华为云IoT边缘（IoT Edge），是边缘计算在物联网行业的应用。IoT Edge 在靠近物或数据源头的边缘侧，融合网络、计算、存储、应用核心能力的开放平台，就近提供计算和智能服务，满足行业在实时业务、应用智能、安全与隐私保护等方面的基本需求。', 
+                    '华为云IoT设备接入服务IoTDA（IoT Device Access）是华为云的物联网平台，提供海量设备连接上云、设备和云端双向消息通信、批量设备管理、远程控制和监控、OTA升级、设备联动规则等能力，并可将设备数据灵活流转到华为云其他服务，帮助物联网行业用户快速完成设备联网及行业应用集成。', 
+                    '华为云IoT设备发放 IoTDP通过设备发放服务，您可以轻松管理跨多区域海量设备的发放工作，实现单点发放管理，设备全球上线的业务目的。', 
+                    '华为云IoT全球SIM联接（Global SIM Link）提供无线蜂窝物联网流量和eSIM/vSIM按需选网，享受当地资费，为客户提供一点接入、全球可达的一站式流量管理服务。', 
+                    '华为云IoT数据分析服务IoTA基于物联网资产模型，整合IoT数据集成、清洗、存储、分析、可视化，为IoT数据开发者提供一站式服务，降低开发门槛，缩短开发周期，快速实现IoT数据价值变现。',
+                    '华为轻量级操作系统 LiteOS，驱动万物感知、互联、智能，可广泛应用于面向个人、家庭和行业的物联网产品和解决方案。',
+                    '华为云IoT应用场景——智慧抄表：围绕城市工商户和居民水表、气表等智能远传抄表场景，结合NB-IoT技术，提供包括IoT平台、企业智能、应用服务、安全管理等端到端优化的云服务能力，令企业运营更高效、居民生活更便捷。',
+                    '华云IoT应用场景——智慧路灯：随着城镇化建设的推进，城市照明面临着数量多、能耗高、管理难、维护成本高的挑战。华为智慧路灯解决方案，提出统一管理各城市区域内的路灯，实现按需照明，深化节能，提升城市安全氛围，为城市发展提供绿动力。',
+                    '华为云IoT应用场景——智慧环保：基于华为IoT云服务的智慧环境监测解决方案，通过NB-IoT一跳方式采集空气质量监测数据，统一汇聚，数据真实、可靠，为政府决策提供有效数据支撑。',
+                    '华为云IoT应用场景——智慧停车：通过NB-IoT车检器实时采集车位数据，智慧停车系统可实时监测各个车位使用状态，提供车位查询、车位引导、车位预定、反向找车、智能管理等功能，真正让用户有更好的停车体验，提升城市居民满意度。',
+                    '华为云IoT应用场景——智慧安防：基于物联网平台实现园区周界、消防各类传感器的统一接入管理，跨系统联动，融合智能化图像搜索、大数据分析等多种智慧安防能力，支持可视化指挥调度和管理，实现事前主动预防， 事中快速管控，事后高效复盘。',
+                    '华为云IoT应用场景——智慧资产管理：基于物联网平台和RFID等物联网技术将园区物理资产数字化，实时监控资产动态，快速盘点亿级资产，降低审计成本，减少设备丢失风险。实时统计资产位置和使用率情况，实现部门间共享和费用结算，高效利用资产设备，减少资产闲置。',
+                    '华为云IoT应用场景——数字化高速公路：高速公路是综合交通运输体系的重要组成部分，为适应高速公路管理能力提升的要求，提供综合交通数字化管理平台，完整呈现实时高速路交通状态，及时准确的发现拥堵、事故、道路异常等交通事件，提升高速管理效率，诱导合理出行。',
+                    '华为云IoT应用场景——城市道路数字化改造：在城市路口和关键路段采集视频和多种路侧传感器信息，多层次应用智能算法，实现非现场执法和城市道路交通的优化能力。',
+                    '华为云IoT应用场景——园区自动驾驶：基于道路感知服务，在相对封闭的园区或停车场，与车厂自动驾驶技术配合实现限定区域内的自动驾驶，推动自动驾驶技术落地，切实解决客户园区内交通、停车等需求。',
+                    '华为云IoT城市物联服务台助力鹰潭城市物联网产业竞争力提升，并着力打造城市名片。目前鹰潭网络建设、公共服务平台建设、示范应用建设领跑全国，已有30+类物联网应用，15万+设备接入。',
+                    '华为云IoT携手兆邦基集团，基于园区物联网服务在深圳前海打造高效、智能、绿色、安全的科技大厦，实现楼宇设备全连接、数据全融合、场景全联动、调度全智能，有效节约能耗15%。',
+                    '基于华为云IoT全栈云服务，武汉拓宝科技股份有限公司以云计算为核心实现海量数据的汇总处理，提升管理效率，随时随地接受火警，集中管理设备，大大降低了消防实施成本，设备无线联网，电池供电，不需布线，无线覆盖广，平台云端部署。',
+                    '深圳市泛海三江电子股份有限公司基于华为云IoT全栈云服务，实现了消防从烟感探测器这个“哨兵”到消防中心的“指挥部”全程打通，从而突破消防产品单一性销售弊端，开拓全面的消防服务渠道。',
+                    '基于华为云IoT提供的路网数字化服务，都汶高速采用摄像头、雷达等多维度数据采集，在不受雨雾遮挡影响、不新增路灯的情况下，实现全天候实时感知，并能对车辆位置、速度等进行准确检测，实现多种车路协同场景的安全预警。',
+                    '基于华为云IoT设备接入管理服务，SKG实现了手机APP-按 摩仪-云端的智能交互。用户可通过APP选择适合的按 摩功能，还可从云端模式库中下载不同手法的软件包，一键下载、自动安装。',
+                    '华为云&中创瀚维携手打造了以自动割胶系统为核心的智慧胶园，每棵胶树上配置自动割胶机，通过云端统一管控，并将割胶机的精准机械仿形与云端实时感知控制相结合，实现对不同形状胶树的标准0.01mm厚度的精准割胶。',
                 ])
         await self.page.type('.textarea', content, {'delay': 30})
         await asyncio.sleep(1)
