@@ -1,10 +1,12 @@
 import asyncio
+import json
 import os
 import random
 import string
 import time
 
 import requests
+from pyppeteer.network_manager import Response
 
 from libs.base import BaseClient
 
@@ -50,17 +52,6 @@ class BaseHuaWei(BaseClient):
         self.create_done = True
         self.home_url = None
         self.cancel = False
-
-    async def after_handler(self, **kwargs):
-        credit = kwargs.get('result')
-        username = kwargs.get('username')
-        if credit:
-            self.logger.warning(f"{username} -> {credit}\n")
-            if type(credit) == str:
-                credit = int(credit.replace('码豆', '').strip())
-
-            _id = f'{self.parent_user}_{username}' if self.parent_user else self.username
-            requests.post(f'{self.api}/huawei/save', {'name': _id, 'credit': credit})
 
     async def start(self):
         if self.page.url != self.url:
@@ -168,23 +159,32 @@ class BaseHuaWei(BaseClient):
             return True
 
     async def get_credit(self):
+        result = {'credit': 0, 'uid': ''}
+
+        async def intercept_response(response: Response):
+            global uid
+            url = response.url
+            if 'bonususer/rest/me' in url:
+                data = json.loads(await response.text())
+                result['uid'] = data.get('id')
+
+        self.page.on('response', intercept_response)
+
         for i in range(3):
             if self.page.url != self.url:
                 await self.page.goto(self.url, {'waitUntil': 'load'})
             else:
                 await self.page.reload({'waitUntil': 'load'})
+
             await asyncio.sleep(5)
+
             try:
-                return str(await self.page.Jeval('#homeheader-coins', 'el => el.textContent')).replace('码豆', '').strip()
+                s = await self.page.Jeval('#homeheader-coins', 'el => el.textContent')
+                result['credit'] = str(s).replace('码豆', '').strip()
+                break
             except Exception as e:
                 self.logger.debug(e)
-        return 0
-
-    async def print_credit(self, user_name):
-        new_credit = await self.get_credit()
-        self.logger.info(f'码豆: {new_credit}')
-        message = f'{user_name} -> {new_credit}'
-        self.dingding_bot(message, '华为云码豆')
+        return result
 
     async def sign_task(self):
         try:
@@ -205,7 +205,7 @@ class BaseHuaWei(BaseClient):
         await self.page.click('.modal.in .modal-footer .devui-btn')
         await asyncio.sleep(5)
         page_list = await self.browser.pages()
-        await page_list[-1].setViewport({'width': self.width, 'height': self.height})
+        await page_list[-1].setViewport({'width': self.width + 560, 'height': self.height})
         return page_list[-1]
 
     async def close_page(self):
@@ -216,7 +216,7 @@ class BaseHuaWei(BaseClient):
                 await page.close()
 
     async def api_explorer_task(self):
-        await asyncio.sleep(3)
+        await asyncio.sleep(2)
         html = str(await self.task_page.JJeval('.userInfo', '(els) => els.map(el => el.outerHTML)'))
         if html.find('English') != -1:
             items = await self.task_page.querySelectorAll('.userInfo')
@@ -224,6 +224,12 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(2)
             await self.task_page.click('.cdk-overlay-container .dropdown-item')
             await asyncio.sleep(5)
+
+        url = 'https://apiexplorer.developer.huaweicloud.com/apiexplorer/overview'
+        if self.task_page.url == url:
+            url = 'https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=DevStar&api=ListPublishedTemplates'
+            await self.task_page.goto(url, {'waitUntil': 'load'})
+            await asyncio.sleep(3)
 
         await self.task_page.click('#debug')
         await asyncio.sleep(3)
@@ -432,10 +438,14 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
 
     async def pipeline_task(self):
-        await asyncio.sleep(1)
+        items = await self.task_page.querySelectorAll('div.devui-table-view tbody tr')
+        if len(items) <= 0:
+            return
+
         await self.task_page.evaluate(
-            '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) .icon-run').click(); }''')
+            '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) .pipeline-run').click(); }''')
         await asyncio.sleep(1)
+
         await self.task_page.click('.modal.in .devui-btn-primary')
         await asyncio.sleep(1)
         await self.task_page.click('.modal.in .devui-btn-primary')
@@ -471,7 +481,6 @@ class BaseHuaWei(BaseClient):
             await btn_list[0].click()
             await asyncio.sleep(2)
         except Exception as e:
-            await self.send_photo(self.task_page, 'week_new_project')
             self.logger.exception(e)
             await self.close()
             self.cancel = True
@@ -528,9 +537,18 @@ class BaseHuaWei(BaseClient):
 
     async def new_test_task(self):
         await asyncio.sleep(2)
-        await self.task_page.click('#global-guidelines .icon-close')
+        try:
+            await self.task_page.click('#global-guidelines .icon-close')
+        except Exception as e:
+            self.logger.debug(e)
+
         await asyncio.sleep(1)
-        await self.task_page.click('.guide-container .icon-close')
+
+        try:
+            await self.task_page.click('.guide-container .icon-close')
+        except Exception as e:
+            self.logger.debug(e)
+
         await asyncio.sleep(1)
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case')
@@ -595,29 +613,73 @@ class BaseHuaWei(BaseClient):
 
         await asyncio.sleep(15)
 
+    async def get_address(self):
+        page = await self.browser.newPage()
+        url = 'https://devcloud.huaweicloud.com/bonususer/v2/address/queryPageList?page_no=1&page_size=5&_=1620962399910'
+        res = await page.goto(url, {'waitUntil': 'load'})
+        try:
+            data = await res.json()
+            if data.get('error') or not data.get('result'):
+                await asyncio.sleep(1)
+                return ''
+            address = data.get('result').get('result')
+            if type(address) == list:
+                address = address[0]
+                return address.get('id')
+        except Exception as e:
+            self.logger.error(e)
+        finally:
+            await page.close()
+        return ''
 
     async def delete_function(self):
         page = await self.browser.newPage()
-        url_list = ['https://console.huaweicloud.com/functiongraph/?region=cn-north-4#/serverless/functionList',
-                    'https://console.huaweicloud.com/functiongraph/?region=cn-south-1#/serverless/functionList']
+
+        url_list = ['https://console.huaweicloud.com/functiongraph/?region=cn-south-1#/serverless/functionList',
+                    'https://console.huaweicloud.com/functiongraph/?region=cn-north-4#/serverless/functionList']
+
         for _url in url_list:
             await page.goto(_url, {'waitUntil': 'load'})
-            await page.setViewport({'width': self.width, 'height': self.height})
-            await asyncio.sleep(5)
-            elements = await page.querySelectorAll('td[style="white-space: normal;"]')
-            for element in elements:
-                a_list = await element.querySelectorAll('a.ti3-action-menu-item')
+            await page.setViewport({'width': self.width + 560, 'height': self.height})
+            try:
+                await page.waitForSelector('.ti3-action-menu-item', {'timeout': 10000})
+            except Exception as e:
+                self.logger.debug(e)
+                continue
+
+            while 1:
+                elements = await page.querySelectorAll('td[style="white-space: normal;"]')
+                if not elements or not len(elements):
+                    self.logger.info('no functions.')
+                    break
+
+                a_list = await elements[0].querySelectorAll('a.ti3-action-menu-item')
                 # content = str(await (await element.getProperty('textContent')).jsonValue()).strip()
                 if len(a_list) == 2:
                     try:
                         await a_list[1].click()
                         await asyncio.sleep(1)
+
+                        _input = await page.querySelector('.modal-confirm-text input[type="text"]')
+                        if not _input:
+                            await asyncio.sleep(3)
+                            continue
+
                         await page.type('.modal-confirm-text input[type="text"]', 'DELETE')
                         await asyncio.sleep(1)
                         await page.click('.ti3-modal-footer .ti3-btn-danger')
                         await asyncio.sleep(1)
+
+                        buttons = await page.querySelectorAll('.ti3-modal-footer [type="button"]')
+                        if buttons and len(buttons):
+                            await buttons[1].click()
+                            await asyncio.sleep(2)
+
                     except Exception as e:
-                        self.logger.exception(e)
+                        self.logger.debug(e)
+                        await asyncio.sleep(1)
+
+            await asyncio.sleep(1)
 
         await page.close()
         await asyncio.sleep(1)
@@ -717,6 +779,12 @@ class BaseHuaWei(BaseClient):
         finally:
             await page.close()
 
+    async def print_credit(self, user_name):
+        new_credit = await self.get_credit()
+        self.logger.info(f'码豆: {new_credit}')
+        message = f'{user_name} -> {new_credit}'
+        self.dingding_bot(message, '华为云码豆')
+
     async def delete_api_group(self):
         page = await self.browser.newPage()
         try:
@@ -810,64 +878,3 @@ class BaseHuaWei(BaseClient):
         # await asyncio.sleep(1)
         # await self.page.click('#fastpostsubmit')
         # await asyncio.sleep(5)
-
-    # HDC flag 读书签到 3月23日-4月20日，累计29天
-    async def hdc_read(self):
-        await self.page.goto(os.environ.get('FLAGURL'), {'waitUntil': 'load'})
-        await self.page.waitForSelector('#fastpostsubmit')
-        await asyncio.sleep(1)
-        await self.page.click('#tabeditor-2')
-        content = random.choice(
-                [
-                    '每天坚持打卡', 
-                    '实现flag，打卡mark', 
-                    '坚持继续打卡~~', 
-                    '打卡++1', 
-                    'flag达成', 
-                    '记录一下', 
-                    'mark今天的打卡', 
-                    '打卡，坚持不停',
-                    '继续打卡'
-                ])
-        await self.page.type('.textarea', content, {'delay': 30})
-        await asyncio.sleep(1)
-        await self.page.click('#fastpostsubmit')
-        await asyncio.sleep(30)
-    
-    # 【我要去HDC2021①】口令盖楼，周边、码豆、门票每周送！ 活动时间：3月23日-4月20日
-    async def hdc_floor(self):
-        await self.page.goto('https://bbs.huaweicloud.com/forum/thread-115425-1-1.html', {'waitUntil': 'load'})
-        await self.page.waitForSelector('#fastpostsubmit')
-        await asyncio.sleep(1)
-        await self.page.click('#tabeditor-2')
-        content = random.choice(
-                [
-                    '华为开发者大会2021（Cloud）是华为面向ICT(信息与通信)领域全球开发者的年度旗舰活动。', 
-                    '华为云IoT致力于提供极简接入、智能化、安全可信等全栈全场景服务和开发、集成、托管、运营等一站式工具服务。', 
-                    '华为云IoT边缘（IoT Edge），是边缘计算在物联网行业的应用。IoT Edge 在靠近物或数据源头的边缘侧，融合网络、计算、存储、应用核心能力的开放平台，就近提供计算和智能服务，满足行业在实时业务、应用智能、安全与隐私保护等方面的基本需求。', 
-                    '华为云IoT设备接入服务IoTDA（IoT Device Access）是华为云的物联网平台，提供海量设备连接上云、设备和云端双向消息通信、批量设备管理、远程控制和监控、OTA升级、设备联动规则等能力，并可将设备数据灵活流转到华为云其他服务，帮助物联网行业用户快速完成设备联网及行业应用集成。', 
-                    '华为云IoT设备发放 IoTDP通过设备发放服务，您可以轻松管理跨多区域海量设备的发放工作，实现单点发放管理，设备全球上线的业务目的。', 
-                    '华为云IoT全球SIM联接（Global SIM Link）提供无线蜂窝物联网流量和eSIM/vSIM按需选网，享受当地资费，为客户提供一点接入、全球可达的一站式流量管理服务。', 
-                    '华为云IoT数据分析服务IoTA基于物联网资产模型，整合IoT数据集成、清洗、存储、分析、可视化，为IoT数据开发者提供一站式服务，降低开发门槛，缩短开发周期，快速实现IoT数据价值变现。',
-                    '华为轻量级操作系统 LiteOS，驱动万物感知、互联、智能，可广泛应用于面向个人、家庭和行业的物联网产品和解决方案。',
-                    '华为云IoT应用场景——智慧抄表：围绕城市工商户和居民水表、气表等智能远传抄表场景，结合NB-IoT技术，提供包括IoT平台、企业智能、应用服务、安全管理等端到端优化的云服务能力，令企业运营更高效、居民生活更便捷。',
-                    '华云IoT应用场景——智慧路灯：随着城镇化建设的推进，城市照明面临着数量多、能耗高、管理难、维护成本高的挑战。华为智慧路灯解决方案，提出统一管理各城市区域内的路灯，实现按需照明，深化节能，提升城市安全氛围，为城市发展提供绿动力。',
-                    '华为云IoT应用场景——智慧环保：基于华为IoT云服务的智慧环境监测解决方案，通过NB-IoT一跳方式采集空气质量监测数据，统一汇聚，数据真实、可靠，为政府决策提供有效数据支撑。',
-                    '华为云IoT应用场景——智慧停车：通过NB-IoT车检器实时采集车位数据，智慧停车系统可实时监测各个车位使用状态，提供车位查询、车位引导、车位预定、反向找车、智能管理等功能，真正让用户有更好的停车体验，提升城市居民满意度。',
-                    '华为云IoT应用场景——智慧安防：基于物联网平台实现园区周界、消防各类传感器的统一接入管理，跨系统联动，融合智能化图像搜索、大数据分析等多种智慧安防能力，支持可视化指挥调度和管理，实现事前主动预防， 事中快速管控，事后高效复盘。',
-                    '华为云IoT应用场景——智慧资产管理：基于物联网平台和RFID等物联网技术将园区物理资产数字化，实时监控资产动态，快速盘点亿级资产，降低审计成本，减少设备丢失风险。实时统计资产位置和使用率情况，实现部门间共享和费用结算，高效利用资产设备，减少资产闲置。',
-                    '华为云IoT应用场景——数字化高速公路：高速公路是综合交通运输体系的重要组成部分，为适应高速公路管理能力提升的要求，提供综合交通数字化管理平台，完整呈现实时高速路交通状态，及时准确的发现拥堵、事故、道路异常等交通事件，提升高速管理效率，诱导合理出行。',
-                    '华为云IoT应用场景——城市道路数字化改造：在城市路口和关键路段采集视频和多种路侧传感器信息，多层次应用智能算法，实现非现场执法和城市道路交通的优化能力。',
-                    '华为云IoT应用场景——园区自动驾驶：基于道路感知服务，在相对封闭的园区或停车场，与车厂自动驾驶技术配合实现限定区域内的自动驾驶，推动自动驾驶技术落地，切实解决客户园区内交通、停车等需求。',
-                    '华为云IoT城市物联服务台助力鹰潭城市物联网产业竞争力提升，并着力打造城市名片。目前鹰潭网络建设、公共服务平台建设、示范应用建设领跑全国，已有30+类物联网应用，15万+设备接入。',
-                    '华为云IoT携手兆邦基集团，基于园区物联网服务在深圳前海打造高效、智能、绿色、安全的科技大厦，实现楼宇设备全连接、数据全融合、场景全联动、调度全智能，有效节约能耗15%。',
-                    '基于华为云IoT全栈云服务，武汉拓宝科技股份有限公司以云计算为核心实现海量数据的汇总处理，提升管理效率，随时随地接受火警，集中管理设备，大大降低了消防实施成本，设备无线联网，电池供电，不需布线，无线覆盖广，平台云端部署。',
-                    '深圳市泛海三江电子股份有限公司基于华为云IoT全栈云服务，实现了消防从烟感探测器这个“哨兵”到消防中心的“指挥部”全程打通，从而突破消防产品单一性销售弊端，开拓全面的消防服务渠道。',
-                    '基于华为云IoT提供的路网数字化服务，都汶高速采用摄像头、雷达等多维度数据采集，在不受雨雾遮挡影响、不新增路灯的情况下，实现全天候实时感知，并能对车辆位置、速度等进行准确检测，实现多种车路协同场景的安全预警。',
-                    '基于华为云IoT设备接入管理服务，SKG实现了手机APP-按 摩仪-云端的智能交互。用户可通过APP选择适合的按 摩功能，还可从云端模式库中下载不同手法的软件包，一键下载、自动安装。',
-                    '华为云&中创瀚维携手打造了以自动割胶系统为核心的智慧胶园，每棵胶树上配置自动割胶机，通过云端统一管控，并将割胶机的精准机械仿形与云端实时感知控制相结合，实现对不同形状胶树的标准0.01mm厚度的精准割胶。',
-                ])
-        await self.page.type('.textarea', content, {'delay': 30})
-        await asyncio.sleep(1)
-        await self.page.click('#fastpostsubmit')
-        await asyncio.sleep(30)

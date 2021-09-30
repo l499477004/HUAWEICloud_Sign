@@ -1,23 +1,22 @@
-name: ZHYW
+name: HuaWei
 
 on:
     workflow_dispatch:
     schedule:
-        - cron: "*/30 0-14 * * *"
+        - cron: "10 0-22/3 * * *"
     watch:
         types: [started]
 
 env:
   DING_TOKEN: ${{ secrets.DING_TOKEN }}
   DING_SECRET: ${{ secrets.DING_SECRET }}
-  FLAGURL: ${{ secrets.FLAGURL }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
     - uses: actions/setup-python@v2
       with:
         python-version: '3.6'
@@ -25,7 +24,6 @@ jobs:
     - name: requirements
       run: |
         pip3 install -r requirements.txt
-
     - name: Run
       run: |
         python3 main.py --client huawei --username ${{ secrets.USERNAME }} --password ${{ secrets.PASSWORD }}
