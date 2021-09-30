@@ -27,7 +27,7 @@ jobs:
     - name: Run
       run: |
         python3 main.py 
-        --client huawei 
+        --client base 
         --username ${{ secrets.USERNAME }} 
         --password ${{ secrets.PASSWORD }} 
         --iam ${{ secrets.IAM }} 
