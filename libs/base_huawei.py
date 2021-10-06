@@ -194,9 +194,9 @@ class BaseHuaWei(BaseClient):
                 'el => el.textContent')
             sign_txt = str(info).strip()
             self.logger.info(sign_txt)
-            # if sign_txt.find('已签到') == 1:
-            # await self.page.click('#homeheader-signin')
-            await asyncio.sleep(3)
+            if sign_txt.find('已签到') == 1:
+                await self.page.click('#homeheader-signin')
+                await asyncio.sleep(3)
         except Exception as e:
             self.logger.warning(e)
 
