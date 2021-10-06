@@ -33,16 +33,16 @@ class HuaWei(BaseHuaWei):
 
 
     async def login(self, username, password):
-        await self.page.waitForSelector('input[name="userAccount"]')
+        await self.page.waitForSelector('input[type="text"]')
         await asyncio.sleep(1)
-        await self.page.type('input[name="userAccount"]', username, {'delay': 10})
+        await self.page.type('input[type="text"]', username, {'delay': 10})
         await asyncio.sleep(3)
-        await self.page.type('.hwid-input-pwd', password, {'delay': 10})
+        await self.page.type('input[type="password"]', password, {'delay': 10})
         await asyncio.sleep(2)
-        await self.page.click('.hwid-list-row-active')
-        await self.page.type('.hwid-input-pwd', password, {'delay': 10})
+        # await self.page.click('.hwid-list-row-active')
+        await self.page.type('.input[type="password"]', password, {'delay': 10})
         await asyncio.sleep(2)
-        await self.page.click('.normalBtn')
+        await self.page.click('#btn_submit')
         await asyncio.sleep(5)
 
 
