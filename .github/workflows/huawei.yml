@@ -26,10 +26,4 @@ jobs:
         pip3 install -r requirements.txt
     - name: Run
       run: |
-        python3 main.py 
-        --client base 
-        --username ${{ secrets.USERNAME }} 
-        --password ${{ secrets.PASSWORD }} 
-        --iam ${{ secrets.IAM }} 
-        --parent_user ${{ secrets.PARENT_USER }}
-        --parent ${{ secrets.PARENT }}
+        python3 main.py --client huawei --username ${{ secrets.USERNAME }} --password ${{ secrets.PASSWORD }}

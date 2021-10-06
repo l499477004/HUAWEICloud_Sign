@@ -47,7 +47,7 @@ class BaseHuaWei(BaseClient):
 
     def __init__(self):
         super().__init__()
-        self.url = 'https://auth.huaweicloud.com/authui/login.html#/login'
+        self.url = 'https://auth.huaweicloud.com/authui/login.html?service=https%3A%2F%2Fdevcloudsso.huaweicloud.com%2Fssoproxy%2Fauthticket%3Fservice%3Dhttps%253A%252F%252Fdevcloud.huaweicloud.com%252Fbonususer%252Fhome%252Fcostbonus&quickLogin=true#/login2'
         self.task_page = None
         self.create_done = True
         self.home_url = None
