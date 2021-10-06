@@ -46,6 +46,7 @@ class HuaWei(BaseHuaWei):
         await asyncio.sleep(5)
         self.logger.info(f'click button')
         await self.page.click('.cancelBtn')
+        await asyncio.sleep(10)
 
 
     async def iam_login(self, username, password, parent):
