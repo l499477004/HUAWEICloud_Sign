@@ -42,7 +42,7 @@ class HuaWei(BaseHuaWei):
         self.logger.info(f'password1')
         await asyncio.sleep(2)
         # await self.page.click('.hwid-list-row-active')
-        await self.page.type('#personalPasswordInputId > input"]', password, {'delay': 10})
+        await self.page.type('#personalPasswordInputId > input]', password, {'delay': 10})
         self.logger.info(f'password2')
         await asyncio.sleep(2)
         await self.page.click('#btn_submit')
