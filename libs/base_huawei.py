@@ -255,8 +255,13 @@ class BaseHuaWei(BaseClient):
 
     async def view_code_task(self):
         await asyncio.sleep(10)
-        await self.task_page.click('#code-template-cards .card-width:nth-child(2) .code-template-card-title')
-        await asyncio.sleep(2)
+        codelabsUrl = 'https://codelabs.developer.huaweicloud.com/codelabs'
+        await self.task_page.goto(codelabsUrl, {'waitUntil': 'load'})
+        await asyncio.sleep(5)
+        await self.task_page.click('#code-template-card-title')
+        await asyncio.sleep(5)
+        # await self.task_page.click('#code-template-cards .card-width:nth-child(2) .code-template-card-title')
+        # await asyncio.sleep(2)
 
     async def open_code_task(self):
         await asyncio.sleep(5)
