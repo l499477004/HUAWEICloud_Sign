@@ -23,7 +23,7 @@ name_map = {
     '测试管理': [['new_test_task', 0]],
     'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1]],
     '函数工作流': [['new_fun_task', 0]],
-    '使用API  Explorer完在线调试': 'api_explorer_task',
+    '使用API Explorer完在线调试': 'api_explorer_task',
     '使用API Explorer在线调试': 'api2_explorer_task',
     '使用Devstar生成代码工程': 'dev_star_task',
     '浏览Codelabs代码示例': 'view_code_task',
@@ -215,6 +215,7 @@ class BaseHuaWei(BaseClient):
             if page.url != self.url:
                 await page.close()
 
+    # API接口用例测试
     async def api_explorer_task(self):
         await asyncio.sleep(2)
         html = str(await self.task_page.JJeval('.userInfo', '(els) => els.map(el => el.outerHTML)'))
@@ -226,6 +227,9 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(5)
 
         url = 'https://apiexplorer.developer.huaweicloud.com/apiexplorer/overview'
+        # 2021年10月13日11:55:40增加查看华为云官方API
+        await self.task_page.goto(url, {'waitUntil': 'load'})
+        await asyncio.sleep(10)
         if self.task_page.url == url:
             url = 'https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=DevStar&api=ListPublishedTemplates'
             await self.task_page.goto(url, {'waitUntil': 'load'})
@@ -234,6 +238,8 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('#debug')
         await asyncio.sleep(3)
 
+    # API接口用例测试
+    # 正常
     async def api2_explorer_task(self):
         _url = 'https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=DevStar&api=ListPublishedTemplates'
         await self.task_page.goto(_url, {'waitUntil': 'load'})
