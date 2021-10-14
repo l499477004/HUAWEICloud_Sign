@@ -910,18 +910,16 @@ class BaseHuaWei(BaseClient):
 
     # 每周添加成员  需要建一个IAM子账户
     async def week_new_member(self):
-        await self.page.goto('https://devcloud.huaweicloud.com/home', {'waitUntil': 'load'})
-        self.logger.info(f'打开项目页面')
+        await self.page.goto(self.url, {'waitUntil': 'load'})
+        await asyncio.sleep(5)
+        await self.task_page.click('#experience-missions-1')
+        await asyncio.sleep(1)
+        await self.task_page.click('#do-task > button')
+        self.logger.info(self.task_page.url)
         await asyncio.sleep(5)
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1)').click() }''')
-        self.logger.info(f'选择第一个工作项')
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
         await asyncio.sleep(5)
-        urlMap = self.task_page.url.split("/")
-        url = 'https://devcloud.cn-north-4.huaweicloud.com/projects/project/' + urlMap[5] + '/config/member'
-        self.logger.info(f'获取项目id：' + urlMap[5])
-        await self.page.goto(url, {'waitUntil': 'load'})
-        await asyncio.sleep(3)
         # 添加成员
         # 点击“添加成员”
         await self.task_page.evaluate(
@@ -946,7 +944,12 @@ class BaseHuaWei(BaseClient):
 
     # 每天新建工作项
     async def new_work_project(self):
-        await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/new', {'waitUntil': 'load'})
+        await self.page.goto(self.url, {'waitUntil': 'load'})
+        await asyncio.sleep(5)
+        await self.task_page.click('#experience-missions-1')
+        await asyncio.sleep(1)
+        await self.task_page.click('#do-task > button')
+        self.logger.info(self.task_page.url)
         await asyncio.sleep(5)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
@@ -964,5 +967,5 @@ class BaseHuaWei(BaseClient):
         # 保存
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#scrum-rightContent > ng-component > div.scrum-task-detail-footer.ng-star-inserted > d-button:nth-child(1) > button').click() }''')
-        await asyncio.sleep(1)
+        await asyncio.sleep(3)
 
