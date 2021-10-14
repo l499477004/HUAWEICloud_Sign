@@ -910,7 +910,7 @@ class BaseHuaWei(BaseClient):
 
     # 每周添加成员  需要建一个IAM子账户
     async def week_new_member(self):
-        await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/new', {'waitUntil': 'load'})
+        await self.page.goto('https://devcloud.huaweicloud.com/home', {'waitUntil': 'load'})
         await asyncio.sleep(5)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
