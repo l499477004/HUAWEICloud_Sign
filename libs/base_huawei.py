@@ -910,9 +910,10 @@ class BaseHuaWei(BaseClient):
 
     # 每周添加成员  需要建一个IAM子账户
     async def week_new_member(self):
-        await self.page.goto(self.url, {'waitUntil': 'load'})
+        await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
         await asyncio.sleep(5)
-        await self.task_page.click('#experience-missions-1')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#experience-missions-1 > div > h5').click() }''')
         await asyncio.sleep(1)
         await self.task_page.click('#do-task > button')
         self.logger.info(self.task_page.url)
@@ -944,9 +945,10 @@ class BaseHuaWei(BaseClient):
 
     # 每天新建工作项
     async def new_work_project(self):
-        await self.page.goto(self.url, {'waitUntil': 'load'})
+        await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
         await asyncio.sleep(5)
-        await self.task_page.click('#experience-missions-1')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#experience-missions-2 > div > h5').click() }''')
         await asyncio.sleep(1)
         await self.task_page.click('#do-task > button')
         self.logger.info(self.task_page.url)
