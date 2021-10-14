@@ -11,7 +11,8 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    #'项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    '项目管理': [['week_new_project', 0]],
     '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
     'CloudIDE': [['open_ide_task', 0]],
     '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
