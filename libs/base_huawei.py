@@ -915,7 +915,8 @@ class BaseHuaWei(BaseClient):
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#experience-missions-1 > div > h5').click() }''')
         await asyncio.sleep(1)
-        await self.task_page.click('#do-task > button')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#do-task > button').click() }''')
         self.logger.info(self.task_page.url)
         await asyncio.sleep(5)
         await self.task_page.evaluate(
@@ -950,7 +951,8 @@ class BaseHuaWei(BaseClient):
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#experience-missions-2 > div > h5').click() }''')
         await asyncio.sleep(1)
-        await self.task_page.click('#do-task > button')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#do-task > button').click() }''')
         self.logger.info(self.task_page.url)
         await asyncio.sleep(5)
         await self.task_page.evaluate(
