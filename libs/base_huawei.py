@@ -915,10 +915,11 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1)').click() }''')
-        self.logger.info(f'打开项目页面')
+        self.logger.info(f'选择第一个工作项')
         await asyncio.sleep(5)
         urlMap = self.task_page.url.split("/")
         url = 'https://devcloud.cn-north-4.huaweicloud.com/projects/project/' + urlMap[5] + '/config/member'
+        self.logger.info(f'获取项目id：' + urlMap[5])
         await self.page.goto(url, {'waitUntil': 'load'})
         await asyncio.sleep(3)
         # 添加成员
