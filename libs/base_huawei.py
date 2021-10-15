@@ -11,8 +11,8 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    #'项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    '项目管理': [['week_new_project', 0]],
+    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    # '项目管理': [['week_new_project', 0]],
     '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
     'CloudIDE': [['open_ide_task', 0]],
     '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
@@ -22,7 +22,7 @@ name_map = {
     '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
     '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
     '测试管理': [['new_test_task', 0]],
-    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1]],
+    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
     '函数工作流': [['new_fun_task', 0]],
     '使用API Explorer完在线调试': 'api_explorer_task',
     '使用API Explorer在线调试': 'api2_explorer_task',
@@ -619,6 +619,12 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         await self.task_page.click('.ti-btn-danger.ml10.ng-binding')
 
+    async def debug_api_task(self):
+        await asyncio.sleep(3)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#overViewContent > div.cti-clearfix > div.cti-fl-right > div:nth-child(1) > span > button').click() }''')
+        await asyncio.sleep(15)
+
     async def new_fun_task(self):
         url = self.task_page.url
         if url.find('serverless/dashboard') == -1:
@@ -915,75 +921,75 @@ class BaseHuaWei(BaseClient):
         # await asyncio.sleep(5)
 
     # 每周添加成员  需要建一个IAM子账户
-    # async def week_new_member(self):
-    #     await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
-    #     await asyncio.sleep(10)
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#experience-missions-1 > div').click() }''')
-    #     self.logger.info('确认任务')
-    #     await asyncio.sleep(1)
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#do-task > button').click() }''')
-    #     self.logger.info('前往任务页面')
-    #     await asyncio.sleep(5)
-    #     self.logger.info(self.task_page.url)
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
-    #     self.logger.info('点击第一个项目')
-    #     await asyncio.sleep(5)
-    #     # 添加成员
-    #     # 点击“添加成员”
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#projectman-member-config > div.margin-v-s.member-operation > div > div > d-button > button > span.button-content').click() }''')
-    #     self.logger.info('点击添加成员')
-    #     await asyncio.sleep(1)
-    #     # 点击“从本企业用户”
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#cdk-overlay-0 > div > ul > li:nth-child(1) > a').click() }''')
-    #     self.logger.info('点击从本企业用户')
-    #     await asyncio.sleep(1)
-    #     # 选择成员
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > select-member > div > d-tabs > div > div > d-data-table > div > div > div > table > tbody > tr > td.devui-checkable-cell.ng-star-inserted > d-checkbox > div > label').click() }''')
-    #     self.logger.info('选择成员')
-    #     await asyncio.sleep(1)
-    #     # 点击“下一步”
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > div.add-member-btn > d-button.ng-star-inserted > button').click() }''')
-    #     self.logger.info('下一步')
-    #     await asyncio.sleep(1)
-    #     # 点击“保存”
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > div.add-member-btn > d-button:nth-child(2) > button').click() }''')
-    #     self.logger.info('保存')
-    #     await asyncio.sleep(3)
+    async def week_new_member(self):
+        # await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
+        await asyncio.sleep(10)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#experience-missions-1 > div').click() }''')
+        self.logger.info('确认任务')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#do-task > button').click() }''')
+        self.logger.info('前往任务页面')
+        await asyncio.sleep(5)
+        self.logger.info(self.task_page.url)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
+        self.logger.info('点击第一个项目')
+        await asyncio.sleep(5)
+        # 添加成员
+        # 点击“添加成员”
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#projectman-member-config > div.margin-v-s.member-operation > div > div > d-button > button > span.button-content').click() }''')
+        self.logger.info('点击添加成员')
+        await asyncio.sleep(1)
+        # 点击“从本企业用户”
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#cdk-overlay-0 > div > ul > li:nth-child(1) > a').click() }''')
+        self.logger.info('点击从本企业用户')
+        await asyncio.sleep(1)
+        # 选择成员
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > select-member > div > d-tabs > div > div > d-data-table > div > div > div > table > tbody > tr > td.devui-checkable-cell.ng-star-inserted > d-checkbox > div > label').click() }''')
+        self.logger.info('选择成员')
+        await asyncio.sleep(1)
+        # 点击“下一步”
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > div.add-member-btn > d-button.ng-star-inserted > button').click() }''')
+        self.logger.info('下一步')
+        await asyncio.sleep(1)
+        # 点击“保存”
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > div.add-member-btn > d-button:nth-child(2) > button').click() }''')
+        self.logger.info('保存')
+        await asyncio.sleep(3)
 
     # # 每天新建工作项
-    # async def new_work_project(self):
-    #     await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
-    #     await asyncio.sleep(10)
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#experience-missions-2 > div').click() }''')
-    #     await asyncio.sleep(1)
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#do-task > button').click() }''')
-    #     self.logger.info(self.task_page.url)
-    #     await asyncio.sleep(5)
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
-    #     await asyncio.sleep(5)
-    #     # 点击“新建”
-    #     await self.task_page.click('#scrum-issue-dropdown')
-    #     await asyncio.sleep(1)
-    #     # 点击“BUG”
-    #     await self.task_page.click('#newScrum_bug')
-    #     await asyncio.sleep(1)
-    #     # 标题添加时间戳
-    #     nowTime = time.strftime('%Y-%m-%d %H:%M:%S')
-    #     await self.task_page.type('#textArea', nowTime)
-    #     await asyncio.sleep(1)
-    #     # 保存
-    #     await self.task_page.evaluate(
-    #             '''() =>{ document.querySelector('#scrum-rightContent > ng-component > div.scrum-task-detail-footer.ng-star-inserted > d-button:nth-child(1) > button').click() }''')
-    #     await asyncio.sleep(3)
+    async def new_work_project(self):
+        # await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
+        await asyncio.sleep(10)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#experience-missions-2 > div').click() }''')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#do-task > button').click() }''')
+        self.logger.info(self.task_page.url)
+        await asyncio.sleep(5)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
+        await asyncio.sleep(5)
+        # 点击“新建”
+        await self.task_page.click('#scrum-issue-dropdown')
+        await asyncio.sleep(1)
+        # 点击“BUG”
+        await self.task_page.click('#newScrum_bug')
+        await asyncio.sleep(1)
+        # 标题添加时间戳
+        nowTime = time.strftime('%Y-%m-%d %H:%M:%S')
+        await self.task_page.type('#textArea', nowTime)
+        await asyncio.sleep(1)
+        # 保存
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#scrum-rightContent > ng-component > div.scrum-task-detail-footer.ng-star-inserted > d-button:nth-child(1) > button').click() }''')
+        await asyncio.sleep(3)
 
