@@ -423,7 +423,9 @@ class BaseHuaWei(BaseClient):
 
     async def deploy_task(self):
         await asyncio.sleep(3)
-        await self.task_page.click('#rf-task-execute')
+        # 修改时间：2021年10月15日15:01:51
+        await self.task_page.click('.devui-table tbody tr:nth-child(1) td:nth-child(6) #rf-task-execute')
+        # await self.task_page.click('#rf-task-execute')
         await asyncio.sleep(3)
 
     async def run_test(self):
