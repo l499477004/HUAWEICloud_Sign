@@ -192,7 +192,7 @@ class BaseHuaWei(BaseClient):
         try:
             await asyncio.sleep(5)
             info = await self.page.Jeval(
-                '#homeheader-signin span.button-content, #homeheader-signined  span.button-content',
+                '#homeheader-signin span.button-content, #homeheader-signined span.button-content',
                 'el => el.textContent')
             sign_txt = str(info).strip()
             self.logger.info(sign_txt)
