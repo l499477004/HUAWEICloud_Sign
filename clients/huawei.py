@@ -44,8 +44,8 @@ class HuaWei(BaseHuaWei):
         await asyncio.sleep(2)
         await self.page.click('.normalBtn')
         await asyncio.sleep(5)
-        self.logger.info(f'click button')
-        await self.page.click('.cancelBtn')
+        self.logger.info(f'跳过升级')
+        await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
         await asyncio.sleep(5)
 
 
