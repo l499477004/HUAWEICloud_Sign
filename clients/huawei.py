@@ -38,7 +38,7 @@ class HuaWei(BaseHuaWei):
         await self.page.type('input[name="userAccount"]', username, {'delay': 10})
         await asyncio.sleep(3)
         await self.page.type('.hwid-input-pwd', password, {'delay': 10})
-        await asyncio.sleep(2)
+        await asyncio.sleep(5)
         await self.page.click('.hwid-list-row-active')
         await self.page.type('.hwid-input-pwd', password, {'delay': 10})
         await asyncio.sleep(2)

@@ -478,7 +478,7 @@ class BaseHuaWei(BaseClient):
             return
 
         await self.task_page.evaluate(
-            '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) td:nth-child(2) .devui-btn-default').click(); }''')
+            '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) .devui-btn-default').click(); }''')
         await asyncio.sleep(1)
 
         await self.task_page.click('#OctopusExecute .devui-btn-primary')
