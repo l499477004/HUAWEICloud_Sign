@@ -924,14 +924,6 @@ class BaseHuaWei(BaseClient):
     async def week_new_member(self):
         # await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
         await asyncio.sleep(10)
-        await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#experience-missions-1 > div').click() }''')
-        self.logger.info('确认任务')
-        await asyncio.sleep(1)
-        await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#do-task > button').click() }''')
-        self.logger.info('前往任务页面')
-        await asyncio.sleep(5)
         self.logger.info(self.task_page.url)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
@@ -968,11 +960,6 @@ class BaseHuaWei(BaseClient):
     async def new_work_project(self):
         # await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
         await asyncio.sleep(10)
-        await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#experience-missions-2 > div').click() }''')
-        await asyncio.sleep(1)
-        await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#do-task > button').click() }''')
         self.logger.info(self.task_page.url)
         await asyncio.sleep(5)
         await self.task_page.evaluate(
