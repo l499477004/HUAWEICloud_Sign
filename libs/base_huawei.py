@@ -448,34 +448,16 @@ class BaseHuaWei(BaseClient):
             '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) i.icon-run').click(); }''')
         await asyncio.sleep(5)
 
-    # 停用 测试新代码
-    # async def week_new_pipeline(self):
-    #     await asyncio.sleep(2)
-    #     await self.task_page.click('#createPipeline')
-    #     await asyncio.sleep(1)
-    #     await self.task_page.click('.content .devui-dropup')
-    #     await asyncio.sleep(0.5)
-    #     await self.task_page.click('.devui-dropdown-item:nth-child(1)')
-    #     await asyncio.sleep(0.5)
-    #     await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
-    #     await asyncio.sleep(0.5)
-
-    #     dropdowns = await self.task_page.querySelectorAll('.devui-dropup')
-    #     for dropdown in dropdowns:
-    #         await dropdown.click()
-    #         await asyncio.sleep(1)
-    #         dropdown_item = await dropdown.querySelectorAll('.devui-dropdown-item')
-    #         await dropdown_item[0].click()
-    #         await asyncio.sleep(0.5)
-
-    #     await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
-    #     await asyncio.sleep(1)
-    #     await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
-    #     await asyncio.sleep(5)
     async def week_new_pipeline(self):
-        await asyncio.sleep(5)
+        await asyncio.sleep(2)
         await self.task_page.click('#createPipeline')
-        await asyncio.sleep(3)
+        await asyncio.sleep(1)
+        await self.task_page.click('.content .devui-dropup')
+        await asyncio.sleep(0.5)
+        await self.task_page.click('.devui-dropdown-item:nth-child(1)')
+        await asyncio.sleep(0.5)
+        await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
+        await asyncio.sleep(0.5)
 
         dropdowns = await self.task_page.querySelectorAll('.devui-dropup')
         for dropdown in dropdowns:
@@ -485,9 +467,9 @@ class BaseHuaWei(BaseClient):
             await dropdown_item[0].click()
             await asyncio.sleep(0.5)
 
-        await self.task_page.click('#echoTestNextStep .devui-btn-primary')
+        await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
         await asyncio.sleep(1)
-        await self.task_page.click('#echoTestButtonOk .devui-btn-primary')
+        await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
         await asyncio.sleep(5)
 
     async def pipeline_task(self):
@@ -496,12 +478,12 @@ class BaseHuaWei(BaseClient):
             return
 
         await self.task_page.evaluate(
-            '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) .devui-btn-default').click(); }''')
+            '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) td:nth-child(2) .devui-btn-default').click(); }''')
         await asyncio.sleep(1)
 
-        await self.task_page.click('.modal.in .devui-btn-primary')
-        await asyncio.sleep(1)
-        await self.task_page.click('.modal.in .devui-btn-primary')
+        await self.task_page.click('#OctopusExecute .devui-btn-primary')
+        await asyncio.sleep(3)
+        await self.task_page.click('#startPipeBtn .devui-btn-primary')
         await asyncio.sleep(1)
 
         # dropdowns = await self.task_page.querySelectorAll('div.source-value')
@@ -560,7 +542,7 @@ class BaseHuaWei(BaseClient):
         if git_list and len(git_list) and git_name == 'crawler':
             await self.task_page.click('#repoNamecrawler')
             await asyncio.sleep(10)
-            git_url = await self.task_page.Jeval('.clone-url input', "el => el.getAttribute('title')")
+            git_url = await self.task_page.Jeval('.clone-url span', "el => el.getAttribute('title')")
             _user = self.parent_user if self.parent_user else self.username
             git_url = git_url.replace('git@', f'https://{_user}%2F{self.username}:{self.password}@')
             self.git = git_url.replace('com:', 'com/')
