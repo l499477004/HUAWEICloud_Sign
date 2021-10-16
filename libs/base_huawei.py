@@ -990,9 +990,7 @@ class BaseHuaWei(BaseClient):
         # await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
         await asyncio.sleep(10)
         nowUrl = self.task_page.url
-        projectUrl = await self.task_page.querySelector('div.projects-container .projects-board-in-home a:nth-child(1)').href
         self.logger.info(nowUrl)
-        self.logger.info(projectUrl)
         await self.task_page.ckick('.projects-container .projects-board-in-home a:nth-child(1)')
         # await self.task_page.evaluate(
         #         '''() =>{ document.querySelector("#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1)").click() }''')
