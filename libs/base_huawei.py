@@ -639,8 +639,9 @@ class BaseHuaWei(BaseClient):
 
     async def week_new_api_test_task(self):
         await asyncio.sleep(15)
-        await self._close_test()
+        # await self._close_test()
         await self._tab_api_test()
+
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case')
         await asyncio.sleep(2)
@@ -650,7 +651,7 @@ class BaseHuaWei(BaseClient):
 
     async def new_new_api_task(self):
         await asyncio.sleep(15)
-        await self.task_page.click('div.ti-modal-header ti-close')
+        # await self.task_page.click('div.ti-modal-header ti-close')
         await asyncio.sleep(1)
         urlHeader = self.task_page.url.split("groupDetail")
         await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
@@ -998,11 +999,12 @@ class BaseHuaWei(BaseClient):
     async def week_new_member(self):
         # await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
         await asyncio.sleep(10)
-        nowUrl = self.task_page.url
-        self.logger.info(nowUrl)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
         self.logger.info('点击第一个项目')
+        await asyncio.sleep(5)
+        nowUrl = self.task_page.url.split("/")
+        await self.page.goto('https://devcloud.cn-north-4.huaweicloud.com/projects/project/' + nowUrl[5] + '/config/member', {'waitUntil': 'load'})
         await asyncio.sleep(5)
         # 添加成员
         # 点击“添加成员”
