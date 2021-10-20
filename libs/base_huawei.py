@@ -1000,9 +1000,8 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(10)
         nowUrl = self.task_page.url
         self.logger.info(nowUrl)
-        await self.task_page.ckick('.projects-container .projects-board-in-home a:nth-child(1)')
-        # await self.task_page.evaluate(
-        #         '''() =>{ document.querySelector("#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1)").click() }''')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
         self.logger.info('点击第一个项目')
         await asyncio.sleep(5)
         # 添加成员
