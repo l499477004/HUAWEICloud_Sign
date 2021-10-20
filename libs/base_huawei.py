@@ -453,11 +453,11 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('#createPipeline')
         await asyncio.sleep(1)
         await self.task_page.click('.content .devui-dropup')
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(1)
         await self.task_page.click('.devui-dropdown-item:nth-child(1)')
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(1)
         await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(1)
 
         dropdowns = await self.task_page.querySelectorAll('.devui-dropup')
         for dropdown in dropdowns:
@@ -465,7 +465,7 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(1)
             dropdown_item = await dropdown.querySelectorAll('.devui-dropdown-item')
             await dropdown_item[0].click()
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1)
 
         await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
         await asyncio.sleep(1)
