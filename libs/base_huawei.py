@@ -1001,39 +1001,32 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(10)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
-        self.logger.info('点击第一个项目')
         await asyncio.sleep(10)
         # nowUrl = self.task_page.url.split("/")
         # self.logger.info(nowUrl[5])
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#config > a').click() }''')
         await asyncio.sleep(10)
-        self.logger.info(self.task_page.url)
         # 添加成员
         # 点击“添加成员”
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#add-member').click() }''')
-        self.logger.info('点击添加成员')
         await asyncio.sleep(1)
         # 点击“从本企业用户”
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#cdk-overlay-0 > div > ul > li:nth-child(1) > a').click() }''')
-        self.logger.info('点击从本企业用户')
         await asyncio.sleep(1)
         # 选择成员
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > select-member > div > d-tabs > div > div > d-data-table > div > div > div > table > tbody > tr > td.devui-checkable-cell.ng-star-inserted > d-checkbox > div > label').click() }''')
-        self.logger.info('选择成员')
         await asyncio.sleep(1)
         # 点击“下一步”
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > div.add-member-btn > d-button.ng-star-inserted > button').click() }''')
-        self.logger.info('下一步')
         await asyncio.sleep(1)
         # 点击“保存”
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#memberModal > div > div > ng-component > div > div.add-member-btn > d-button:nth-child(2) > button').click() }''')
-        self.logger.info('保存')
         await asyncio.sleep(3)
 
     # # 每天新建工作项
