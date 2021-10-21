@@ -634,11 +634,11 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(3)
         self.logger.info("执行套件")
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#tsStepReadonlyId > form > div.execute-column > div.execute-column-right.ng-star-inserted > form > div:nth-child(3) > div.left > div > d-select > div > div.devui-form-group.devui-has-feedback.ng-tns-c112-82 > span').click() }''')
+                '''() =>{ document.querySelector('#tsStepReadonlyId > form > div.execute-column > div.execute-column-right.ng-star-inserted > form > div:nth-child(3) > div.left > div > d-select > div > div.devui-form-group.devui-has-feedback > span').click() }''')
         await asyncio.sleep(1)
         self.logger.info("选择用例结果")
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#tsStepReadonlyId > form > div.execute-column > div.execute-column-right.ng-star-inserted > form > div:nth-child(3) > div.left > div > d-select > div > div.devui-dropdown-menu.ng-trigger.ng-trigger-fadeInOut.ng-tns-c112-82.ng-star-inserted > ul > ul > li:nth-child(2)').click() }''')
+                '''() =>{ document.querySelector('#tsStepReadonlyId > form > div.execute-column > div.execute-column-right.ng-star-inserted > form > div:nth-child(3) > div.left > div > d-select > div > div.devui-dropdown-menu.ng-trigger.ng-trigger-fadeInOut.ng-star-inserted > ul > ul > li:nth-child(2)').click() }''')
         await asyncio.sleep(1)
         self.logger.info("用例结果设置为\"成功\"")
         await self.task_page.evaluate(
@@ -646,11 +646,11 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(1)
         self.logger.info("保存用例结果")
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#title-fixed > div.set-suite-result > div.mr-20 > d-select > div > div.devui-form-group.devui-has-feedback.ng-tns-c112-80 > span').click() }''')
+                '''() =>{ document.querySelector('#title-fixed > div.set-suite-result > div.mr-20 > d-select > div > div.devui-form-group.devui-has-feedback > span').click() }''')
         await asyncio.sleep(1)
         self.logger.info("选择测试套结果")
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#title-fixed > div.set-suite-result > div.mr-20 > d-select > div > div.devui-dropdown-menu.ng-trigger.ng-trigger-fadeInOut.ng-tns-c112-80.ng-star-inserted > ul > ul > li:nth-child(2)').click() }''')
+                '''() =>{ document.querySelector('#title-fixed > div.set-suite-result > div.mr-20 > d-select > div > div.devui-dropdown-menu.ng-trigger.ng-trigger-fadeInOut.ng-star-inserted > ul > ul > li:nth-child(2)').click() }''')
         await asyncio.sleep(2)
         self.logger.info("测试套结果设置为\"成功\"")
         await self.task_page.evaluate(
