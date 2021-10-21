@@ -1004,6 +1004,7 @@ class BaseHuaWei(BaseClient):
         self.logger.info('点击第一个项目')
         await asyncio.sleep(10)
         nowUrl = self.task_page.url.split("/")
+        self.logger.info(nowUrl[5])
         await self.page.goto('https://devcloud.cn-north-4.huaweicloud.com/projects/project/' + nowUrl[5] + '/config/member', {'waitUntil': 'load'})
         await asyncio.sleep(10)
         self.logger.info(self.task_page.url)
