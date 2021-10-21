@@ -602,61 +602,46 @@ class BaseHuaWei(BaseClient):
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div > div > div > d-button.mr4.ng-star-inserted > button').click() }''')
         await asyncio.sleep(2)
-        self.logger.info("新建测试套件")
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         await asyncio.sleep(1)
-        self.logger.info("填写套件名称")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div.add-container.ng-star-inserted > create-test-suite > div > div > div > form > div.ts-form-content-left > div.case-content.ng-star-inserted > div > div > div.ng-star-inserted > div > span.addNow').click() }''')
         await asyncio.sleep(5)
-        self.logger.info("添加用例")
-        # 搜索108号用例
         await self.task_page.type('#add-case-to-suite div.modal-body div.listBody.clearBoth d-splitter-pane:nth-child(2) .devui-search input.devui-input.devui-input-sm', '108')
         await asyncio.sleep(1)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#add-case-to-suite > div > div > ng-component > div > div.modal-body > div.listBody.clearBoth > d-splitter > d-splitter-pane:nth-child(2) > div.clear-fix.clearBoth > d-search > div > span.devui-search-icon.devui-search-icon-sm').click() }''')
         await asyncio.sleep(3)
-        self.logger.info("搜索108号用例")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#add-case-to-suite > div > div > ng-component > div > div.modal-body > div.listBody.clearBoth > d-splitter > d-splitter-pane:nth-child(2) > div.add-case-list-wrap > mutual-item-list > div.data-list > d-data-table > div > div > div > table > tbody > tr:nth-child(1) > td.devui-checkable-cell > d-checkbox > div > label > span').click() }''')
         await asyncio.sleep(1)
-        self.logger.info("选择108号用例")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#add-case-to-suite > div > div > ng-component > div > div.modal-body > div.modal-footer > d-button:nth-child(1) > button').click() }''')
         await asyncio.sleep(1)
-        self.logger.info("保存108号用例")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div.add-container.ng-star-inserted > create-test-suite > div > div > div > div.confirmBtn > d-button.ave-button-margin-right > button').click() }''')
         await asyncio.sleep(3)
-        self.logger.info("保存测试套件")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#operate_serviceType > i.icon.icon-run.ng-star-inserted').click() }''')
         await asyncio.sleep(3)
-        self.logger.info("执行套件")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#tsStepReadonlyId > form > div.execute-column > div.execute-column-right.ng-star-inserted > form > div:nth-child(3) > div.left > div > d-select > div > div.devui-form-group.devui-has-feedback > span').click() }''')
         await asyncio.sleep(1)
-        self.logger.info("选择用例结果")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#tsStepReadonlyId > form > div.execute-column > div.execute-column-right.ng-star-inserted > form > div:nth-child(3) > div.left > div > d-select > div > div.devui-dropdown-menu.ng-trigger.ng-trigger-fadeInOut.ng-star-inserted > ul > ul > li:nth-child(2)').click() }''')
         await asyncio.sleep(1)
-        self.logger.info("用例结果设置为\"成功\"")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#tsStepReadonlyId > form > div.execute-column > div.execute-column-right.ng-star-inserted > form > div:nth-child(3) > div.right > d-button:nth-child(1) > button').click() }''')
         await asyncio.sleep(1)
-        self.logger.info("保存用例结果")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#title-fixed > div.set-suite-result > div.mr-20 > d-select > div > div.devui-form-group.devui-has-feedback > span').click() }''')
         await asyncio.sleep(1)
-        self.logger.info("选择测试套结果")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#title-fixed > div.set-suite-result > div.mr-20 > d-select > div > div.devui-dropdown-menu.ng-trigger.ng-trigger-fadeInOut.ng-star-inserted > ul > ul > li:nth-child(2)').click() }''')
         await asyncio.sleep(2)
-        self.logger.info("测试套结果设置为\"成功\"")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#title-fixed > div.right.pt-size > d-button > button').click() }''')
         await asyncio.sleep(1)
-        self.logger.info("保存收工用例测试结果")
 
 
     async def week_new_api_test_task(self):
