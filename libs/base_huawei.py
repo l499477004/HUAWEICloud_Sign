@@ -1010,7 +1010,7 @@ class BaseHuaWei(BaseClient):
         # 添加成员
         # 点击“添加成员”
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#projectman-member-config > div.margin-v-s.member-operation > div > div > d-button > button > span.button-content').click() }''')
+                '''() =>{ document.querySelector('#add-member').click() }''')
         self.logger.info('点击添加成员')
         await asyncio.sleep(1)
         # 点击“从本企业用户”
