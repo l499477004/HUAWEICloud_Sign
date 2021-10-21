@@ -651,10 +651,10 @@ class BaseHuaWei(BaseClient):
 
     async def new_new_api_task(self):
         await asyncio.sleep(15)
-        await self.task_page.click('div.ti-modal-header ti-close')
-        await asyncio.sleep(1)
-        # urlHeader = self.task_page.url.split("groupDetail")
-        # await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
+        # await self.task_page.click('div.ti-modal-header ti-close')
+        # await asyncio.sleep(1)
+        urlHeader = self.task_page.url.split("groupDetail")
+        await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
         await asyncio.sleep(5)
         await self.task_page.click("#ti_checkbox_1_label")
         await asyncio.sleep(1)
