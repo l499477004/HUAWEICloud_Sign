@@ -1003,15 +1003,16 @@ class BaseHuaWei(BaseClient):
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div.devui-layout.devui-layout-projects > ng-component > div > div > div.projects-container.margin-top-l > projects-board-in-home > div > a:nth-child(1) > div.name.over-flow-ellipsis').click() }''')
         self.logger.info('点击第一个项目')
         await asyncio.sleep(10)
-        nowUrl = self.task_page.url.split("/")
-        self.logger.info(nowUrl[5])
-        await self.page.goto('https://devcloud.cn-north-4.huaweicloud.com/projects/project/' + nowUrl[5] + '/config/member', {'waitUntil': 'load'})
+        # nowUrl = self.task_page.url.split("/")
+        # self.logger.info(nowUrl[5])
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#config > a').click() }''')
         await asyncio.sleep(10)
         self.logger.info(self.task_page.url)
         # 添加成员
         # 点击“添加成员”
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#config > a').click() }''')
+                '''() =>{ document.querySelector('#add-member').click() }''')
         self.logger.info('点击添加成员')
         await asyncio.sleep(1)
         # 点击“从本企业用户”
