@@ -441,11 +441,13 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
 
     async def api_test_task(self):
-        await asyncio.sleep(2)
+        await asyncio.sleep(10)
         await self._close_test()
         await self._tab_api_test()
+        self.logger.info("跳转至接口自动化选卡")
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) i.icon-run').click(); }''')
+        self.logger.info("执行接口测试操作")
         await asyncio.sleep(5)
 
     async def week_new_pipeline(self):
@@ -648,12 +650,16 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(15)
         # await self._close_test()
         await self._tab_api_test()
-
+        self.logger.info("跳转至接口测试选项卡")
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
-        await self.task_page.click('div.create-case')
+        await self.task_page.click('div.create-case .devui-btn-primary')
+        self.logger.info("新建测试套件")
         await asyncio.sleep(2)
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
+        self.logger.info("填写接口自动化套件名称")
+        await asyncio.sleep(1)
         await self.task_page.click('div.footer .devui-btn-stress')
+        self.logger.info("保存接口自动化套件")
         await asyncio.sleep(3)
 
     async def new_new_api_task(self):
@@ -663,31 +669,68 @@ class BaseHuaWei(BaseClient):
         urlHeader = self.task_page.url.split("groupDetail")
         await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
         await asyncio.sleep(5)
-        await self.task_page.click("#ti_checkbox_1_label")
-        await asyncio.sleep(1)
-        await self.task_page.click("#api_offline")
-        await asyncio.sleep(1)
-        await self.task_page.evaluate(
+        self.logger.info(self.task_page.url)
+        
+        try:
+            await self.task_page.click("span.ti-checkbox-inner")
+            await asyncio.sleep(1)
+            self.logger.info("选择API")
+            await self.task_page.click("#api_offline")
+            await asyncio.sleep(1)
+            self.logger.info("下线API")
+            await self.task_page.evaluate(
                 '''() =>{ document.querySelector('body > div.ti-modal.ti-fade.ng-isolate-scope.ti-in > div > div > div > div.ti-modal-footer > div:nth-child(1) > span > button').click() }''')
-        await asyncio.sleep(1)
-        await self.task_page.click("#ti_checkbox_1_label")
-        await asyncio.sleep(1)
-        await self.task_page.click("#api_delete")
-        await asyncio.sleep(1)
-        await self.task_page.type("#deleteContent-text", "DELETE")
-        await asyncio.sleep(1)
+            await asyncio.sleep(1)
+            self.logger.info("确认下线API")
+        except Exception as e:
+            self.logger.info("已下线API")
+            self.logger.error(e)
+            raise e
+        
+        try:
+            await self.task_page.click("span.ti-checkbox-inner")
+            await asyncio.sleep(1)
+            self.logger.info("选择API")
+            await self.task_page.click("#api_delete")
+            await asyncio.sleep(1)
+            self.logger.info("删除API")
+            await self.task_page.type("#deleteContent-text", "DELETE")
+            await asyncio.sleep(1)
+            self.logger.info("输入DELETE")
+            await self.task_page.evaluate(
+                '''() =>{ document.querySelector('body > div.ti-modal.ti-fade.ng-isolate-scope.ti-in > div > div > div.ti-modal-footer.ng-scope > div:nth-child(1) > span > button').click() }''')
+            await asyncio.sleep(1)
+            self.logger.info("确认删除API")
+        except Exception as e:
+            self.logger.info("已删除API")
+            self.logger.error(e)
+            raise e
+
         await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/group", {'waitUntil': 'load'})
         await asyncio.sleep(5)
-        await self.task_page.click("#openapi_group tbody tr td:nth-child(1) a")
-        await asyncio.sleep(3)
-        await self.task_page.click("#deletegroup")
-        await asyncio.sleep(1)
-        await self.task_page.type("#tiny-text", "DELETE")
-        await asyncio.sleep(1)
-        await self.task_page.click("#delG")
-        await asyncio.sleep(5)
+
+        try:
+            await self.task_page.click("#openapi_group tbody tr td:nth-child(1) a")
+            await asyncio.sleep(3)
+            self.logger.info("打开API分组")
+            await self.task_page.click("#deletegroup")
+            await asyncio.sleep(1)
+            self.logger.info("删除API分组")
+            await self.task_page.type("#tiny-text", "DELETE")
+            await asyncio.sleep(1)
+            self.logger.info("输入DELETE")
+            await self.task_page.click("#delG")
+            await asyncio.sleep(5)
+            self.logger.info("确认删除API分组")
+        except Exception as e:
+            self.logger.info("已删除API分组")
+            self.logger.error(e)
+            raise e
+
         await self.task_page.goto("https://console.huaweicloud.com/apig/?region=cn-north-4&locale=zh-cn#/apig/expdemo/", {'waitUntil': 'load'})
+        self.logger.info("执行新建API操作")
         await asyncio.sleep(15)
+
 
     async def run_api_task(self):
         await asyncio.sleep(3)
