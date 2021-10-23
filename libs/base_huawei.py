@@ -694,8 +694,6 @@ class BaseHuaWei(BaseClient):
         self.logger.info("填写接口自动化套件名称")
         await asyncio.sleep(1)
         await self.task_page.click('.footer .dbutton:nth-child(2) .devui-btn-stress')
-        # await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div.add-container.ng-star-inserted > create-test-suite > div > div > div > div.confirmBtn > d-button.ave-button-margin-right > button').click() }''')
         self.logger.info("保存接口自动化套件用例")
         await asyncio.sleep(3)
 
