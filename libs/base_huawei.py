@@ -445,8 +445,9 @@ class BaseHuaWei(BaseClient):
         await self._close_test()
         await self._tab_api_test()
         self.logger.info("跳转至接口自动化选卡")
+        await asyncio.sleep(3)
         await self.task_page.evaluate(
-            '''() =>{ document.querySelector('div.devui-table-view tbody tr:nth-child(1) i.icon-run').click(); }''')
+            '''() =>{ document.querySelector('#operate_serviceType > i.icon.icon-run.ng-star-inserted').click(); }''')
         self.logger.info("执行接口测试操作")
         await asyncio.sleep(5)
 
@@ -658,7 +659,9 @@ class BaseHuaWei(BaseClient):
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         self.logger.info("填写接口自动化套件名称")
         await asyncio.sleep(1)
-        await self.task_page.click('div.footer .devui-btn-stress')
+        # await self.task_page.click('.confirmBtn .ave-button-margin-right .devui-btn-stress')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div.add-container.ng-star-inserted > create-test-suite > div > div > div > div.confirmBtn > d-button.ave-button-margin-right > button').click() }''')
         self.logger.info("保存接口自动化套件")
         await asyncio.sleep(3)
 
@@ -667,8 +670,9 @@ class BaseHuaWei(BaseClient):
         # await self.task_page.click('div.ti-modal-header ti-close')
         # await asyncio.sleep(1)
         urlHeader = self.task_page.url.split("groupDetail")
+        self.logger.info(urlHeader)
         await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
-        await asyncio.sleep(5)
+        await asyncio.sleep(8)
         self.logger.info(self.task_page.url)
         
         try:
@@ -684,6 +688,8 @@ class BaseHuaWei(BaseClient):
             self.logger.info("确认下线API")
         except Exception as e:
             self.logger.info("已下线API")
+            await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
+            await asyncio.sleep(8)
             self.logger.error(e)
             raise e
         
@@ -707,7 +713,7 @@ class BaseHuaWei(BaseClient):
             raise e
 
         await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/group", {'waitUntil': 'load'})
-        await asyncio.sleep(5)
+        await asyncio.sleep(8)
 
         try:
             await self.task_page.click("#openapi_group tbody tr td:nth-child(1) a")
