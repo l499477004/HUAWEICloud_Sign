@@ -17,7 +17,7 @@ name_map = {
     'CloudIDE': [['open_ide_task', 0]],
     '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
     '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    '部署': [['deploy_task', 1]],
+    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
     '发布': [['upload_task', 0]],
     '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
     '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
@@ -322,23 +322,26 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('.devui-layout-main-content #create_new_task')
         await asyncio.sleep(1)
         await self.task_page.click('.button-group .devui-btn-stress')
+        await self.logger.info("选择构建模板")
         await asyncio.sleep(5)
         template = await self.task_page.querySelectorAll('.template-content li.template-item')
+        await self.logger.info("选择空白构建")
         await template[3].click()
         await asyncio.sleep(1)
         await self.task_page.click('.button-group .devui-btn-stress')
-
         await asyncio.sleep(5)
-        card_list = await self.task_page.querySelectorAll('.task-detail-cardlist .card-li')
-        await card_list[2].hover()
-        await asyncio.sleep(1)
+        await self.logger.info("添加步骤")
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > edit > d-fullscreen > div > div > div.positon-relative.buildstep-wrapper.ng-star-inserted > d-splitter > d-splitter-pane:nth-child(2) > div > div > div > extend-plugins-render > div > extend-plugins-list > div.task-detail-cardlist.fn-clear-float > div:nth-child(3)').click() }''')
+        await self.logger.info("添加shell")
+        await asyncio.sleep(3)
         await self.task_page.click('.task-detail-cardlist .card-li:nth-child(3) .add-btn')
         await asyncio.sleep(2)
         await self.task_page.click('.button-group .devui-btn-stress')
         await asyncio.sleep(2)
 
     async def compile_build_task(self):
-        await asyncio.sleep(1)
+        await asyncio.sleep(5)
         node = 'div.devui-table-view tbody tr:nth-child(1) .operation-btn-section .devui-btn:nth-child(1)'
         await self.task_page.evaluate('''() =>{ document.querySelector('%s').click(); }''' % node)
         await asyncio.sleep(1)
@@ -421,11 +424,42 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('.deployman-create-content__button-group .devui-btn-primary')
         await asyncio.sleep(3)
 
+    async def week_new_deploy_task(self):
+        await asyncio.sleep(5)
+        await self.task_page.click('#taskCreate')
+        await asyncio.sleep(3)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > create-new-form > div > div.deployman-create-warpper.position-relative > div.content-center > div > div > d-button.ng-star-inserted > button').click(); }''')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > create-new-form > div > div.deployman-create-warpper.position-relative > div.content-center > div > choose-template > div.content > div > div > div:nth-child(2) > div.template-list > div:nth-child(1) > div').click(); }''')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > create-new-form > div > div.deployman-create-warpper.position-relative > div.content-center > div > div > d-button:nth-child(2) > button').click(); }''')
+        await asyncio.sleep(1)
+        await self.task_page.type('#app-devcloud-frameworks > div > ng-component > div > template-form > div > form > deploy-step > div > div.operation-box__plugins-list.ng-star-inserted > extend-plugins-render > div > div.task-detail-title.margin-bottom-20.fn-clear-float.plugin-titile > d-search > div > input', "shell")
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > template-form > div > form > deploy-step > div > div.operation-box__plugins-list.ng-star-inserted > extend-plugins-render > div > div.task-detail-title.margin-bottom-20.fn-clear-float.plugin-titile > d-search > div > span.devui-search-icon').click(); }''')
+        await asyncio.sleep(3)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > template-form > div > form > deploy-step > div > div.operation-box__plugins-list.ng-star-inserted > extend-plugins-render > div > extend-plugins-list > div.task-detail-cardlist.fn-clear-float > div:nth-child(1) > div.btn-wrapper > span').click(); }''')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#DeploymentGroup_groupId > div > div.devui-form-group.devui-has-feedback.ng-tns-c78-38 > input').click(); }''')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#DeploymentGroup_groupId > div > div.devui-dropdown-menu.ng-trigger.ng-trigger-fadeInOut.ng-tns-c78-38.ng-star-inserted > ul > ul > li').click(); }''')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > template-form > div > form > div.deployman-create-content__button-group.ng-star-inserted > d-button:nth-child(2) > button').click(); }''')
+        await asyncio.sleep(1)
+
     async def deploy_task(self):
         await asyncio.sleep(3)
         # 修改时间：2021年10月15日15:01:51
-        await self.task_page.click('.devui-table tbody tr:nth-child(1) td:nth-child(6) #rf-task-execute')
-        # await self.task_page.click('#rf-task-execute')
+        # await self.task_page.click('.devui-table tbody tr:nth-child(1) td:nth-child(6) #rf-task-execute')
+        await self.task_page.click('#rf-task-execute')
         await asyncio.sleep(3)
 
     async def run_test(self):
@@ -682,6 +716,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(15)
         #await self._close_test()
         #await self._tab_api_test()
+        self.logger.info(self.task_page.url)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#testtype_1 > a').click() }''')
         await asyncio.sleep(5)
