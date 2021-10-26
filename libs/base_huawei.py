@@ -349,9 +349,12 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('.button-group .devui-btn-stress')
         self.logger.info("添加步骤")
         await asyncio.sleep(5)
-        await self.task_page.click('.task-detail-cardlist .card-li:nth-child(3) .add-btn')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > edit > d-fullscreen > div > div > div.positon-relative.buildstep-wrapper.ng-star-inserted > d-splitter > d-splitter-pane:nth-child(2) > div > div > div > extend-plugins-render > div > extend-plugins-list > div.task-detail-cardlist.fn-clear-float > div:nth-child(3)').click() }''')
         self.logger.info("添加shell")
-        await asyncio.sleep(2)
+        await asyncio.sleep(3)
+        # await self.task_page.click('.task-detail-cardlist .card-li:nth-child(3) .add-btn')
+        # await asyncio.sleep(2)
         await self.task_page.click('.button-group .devui-btn-stress')
         await asyncio.sleep(2)
 
