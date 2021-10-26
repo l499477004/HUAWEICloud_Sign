@@ -16,11 +16,12 @@ name_map = {
     '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
     'CloudIDE': [['open_ide_task', 0]],
     '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    # '编译构建': [['week_new_compile_build', 0]],
-    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    '编译构建': [['week_new_compile_build', 0]],
+    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
     '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
     '发布': [['upload_task', 0]],
-    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    '流水线': [['week_new_pipeline', 0]],
     '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
     '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
     'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
@@ -323,21 +324,17 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('.devui-layout-main-content #create_new_task')
         await asyncio.sleep(5)
         await self.task_page.click('div.step-footer div.button-group button.devui-btn-stress')
-        self.logger.info("选择构建模板")
         await asyncio.sleep(5)
 
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('div.step-body div.template-wraper div.mt10.ng-star-inserted button.devui-btn').click() }''')
-        self.logger.info("查看更多")
         await asyncio.sleep(3)
 
         for i in range(1, 29):
             el = "#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.template-content > ul > li:nth-child(" + str(i) + ") > div > div.name.over-flow-ellipsis"
             title = await self.task_page.Jeval(el, "attr => attr.getAttribute('title')")
-            self.logger.info(title)
             if title == "空白构建模板":
                 await self.task_page.click("#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.template-content > ul > li:nth-child(" + str(i) + ") > div > div.name.over-flow-ellipsis")
-                self.logger.info("选择空白构建")
                 break;
 
         # template = await self.task_page.querySelectorAll('.template-content li.template-item')
@@ -347,16 +344,18 @@ class BaseHuaWei(BaseClient):
 
 
         await self.task_page.click('.button-group .devui-btn-stress')
-        self.logger.info("添加步骤")
         await asyncio.sleep(5)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > edit > d-fullscreen > div > div > div.positon-relative.buildstep-wrapper.ng-star-inserted > d-splitter > d-splitter-pane:nth-child(2) > div > div > div > extend-plugins-render > div > extend-plugins-list > div.task-detail-cardlist.fn-clear-float > div:nth-child(3)').click() }''')
-        self.logger.info("添加shell")
         await asyncio.sleep(3)
         # await self.task_page.click('.task-detail-cardlist .card-li:nth-child(3) .add-btn')
         # await asyncio.sleep(2)
         await self.task_page.click('.button-group .devui-btn-stress')
-        await asyncio.sleep(2)
+        await asyncio.sleep(3)
+        await self.task_page.click('#choisModels_new')
+        self.logger.info("执行构建")
+        await asyncio.sleep(10)
+
 
     async def compile_build_task(self):
         await asyncio.sleep(5)
@@ -536,8 +535,8 @@ class BaseHuaWei(BaseClient):
 
     async def api_test_task(self):
         await asyncio.sleep(10)
-        #await self._close_test()
-        #await self._tab_api_test()
+        # await self._close_test()
+        # await self._tab_api_test()
         await self.task_page.click("#testtype_1 a")
         self.logger.info("跳转至接口自动化选卡")
         await asyncio.sleep(3)
@@ -577,28 +576,31 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
 
     async def week_new_pipeline(self):
-        await asyncio.sleep(2)
-        await self.task_page.click('#createPipeline')
-        await asyncio.sleep(1)
-        await self.task_page.click('.content .devui-dropup')
-        await asyncio.sleep(1)
-        await self.task_page.click('.devui-dropdown-item:nth-child(1)')
-        await asyncio.sleep(1)
-        await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
-        await asyncio.sleep(1)
-
-        dropdowns = await self.task_page.querySelectorAll('.devui-dropup')
-        for dropdown in dropdowns:
-            await dropdown.click()
-            await asyncio.sleep(1)
-            dropdown_item = await dropdown.querySelectorAll('.devui-dropdown-item')
-            await dropdown_item[0].click()
-            await asyncio.sleep(1)
-
-        await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
-        await asyncio.sleep(1)
-        await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
         await asyncio.sleep(5)
+        await self.task_page.click('#createPipeline')
+        await asyncio.sleep(2)
+        await self.task_page.click('#echoTestNextStep')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+            '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > div.content > select-template > div > div.select-template-content > div.template-item.dontUse > div.template-content > div.template-title.over-flow-ellipsis').click(); }''')
+        await asyncio.sleep(1)
+        await self.task_page.click('#echoTestButtonOk')
+        await asyncio.sleep(5)
+        await self.task_page.click('#startPipeBtn')
+        await asyncio.sleep(1)
+
+        # dropdowns = await self.task_page.querySelectorAll('.devui-dropup')
+        # for dropdown in dropdowns:
+        #     await dropdown.click()
+        #     await asyncio.sleep(1)
+        #     dropdown_item = await dropdown.querySelectorAll('.devui-dropdown-item')
+        #     await dropdown_item[0].click()
+        #     await asyncio.sleep(1)
+
+        # await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
+        # await asyncio.sleep(1)
+        # await self.task_page.click('.pipeline-edit-tab .devui-btn-primary')
+        # await asyncio.sleep(5)
 
     async def pipeline_task(self):
         items = await self.task_page.querySelectorAll('div.devui-table-view tbody tr')
@@ -774,9 +776,9 @@ class BaseHuaWei(BaseClient):
 
     async def week_new_api_test_task(self):
         await asyncio.sleep(15)
-        #await self._close_test()
-        #await self._tab_api_test()
-        self.logger.info(self.task_page.url)
+        # await self._close_test()
+        # await self._tab_api_test()
+        # self.logger.info(self.task_page.url)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#testtype_1 > a').click() }''')
         await asyncio.sleep(5)
@@ -788,7 +790,7 @@ class BaseHuaWei(BaseClient):
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         self.logger.info("填写接口自动化套件名称")
         await asyncio.sleep(1)
-        await self.task_page.click('.footer .dbutton:nth-child(2) .devui-btn-stress')
+        await self.task_page.click('div.footer d-button:nth-child(2) .devui-btn-stress')
         self.logger.info("保存接口自动化套件用例")
         await asyncio.sleep(3)
 
