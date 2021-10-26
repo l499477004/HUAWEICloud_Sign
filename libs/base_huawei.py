@@ -478,7 +478,7 @@ class BaseHuaWei(BaseClient):
         await page.goto(newHostGroupUrl, {'waitUntil': 'load'})
         self.logger.info("--主机组管理")
         await asyncio.sleep(5)
-        try：
+        try:
             await page.type('#app-devcloud-frameworks > div > ng-component > div > hostgroup-info > div > d-tabs > div > div > basic-info > div > div > div:nth-child(1) > input', "linux")
             self.logger.info("--设置主机名称")
             await asyncio.sleep(1)
