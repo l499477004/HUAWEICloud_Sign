@@ -322,8 +322,8 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(2)
         await self.task_page.waitForSelector('.devui-layout-main-content', {'visible': True})
         await self.task_page.click('.devui-layout-main-content #create_new_task')
-        await asyncio.sleep(1)
-        await self.task_page.click('.button-group .devui-btn-stress')
+        await asyncio.sleep(5)
+        await self.task_page.click('div.step-footer div.button-group button.devui-btn-stress')
         self.logger.info("选择构建模板")
         await asyncio.sleep(5)
 
@@ -525,7 +525,7 @@ class BaseHuaWei(BaseClient):
         for item in title_elements:
             newUrl = await (await item.getProperty('href')).jsonValue()
         self.logger.info("新建主机组" + newUrl)
-        await newHostGroup(self, newUrl)
+        await self.newHostGroup(self, newUrl)
         await self.task_page.click("#DeploymentGroup_groupId_button")
         self.logger.info("刷新主机组")
 
