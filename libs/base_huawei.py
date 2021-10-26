@@ -328,8 +328,9 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
 
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.mt10.ng-star-inserted > d-button > button').click() }''')
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.ng-star-inserted > d-button > button').click() }''')
         self.logger.info("查看更多")
+        await asyncio.sleep(3)
 
         for i in range(1, 29):
             el = "#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.template-content > ul > li:nth-child(" + i + ") > div > div.name.over-flow-ellipsis"
@@ -473,8 +474,11 @@ class BaseHuaWei(BaseClient):
 
 
 
-        NewUrl = await self.task_page.querySelector("#DeploymentGroup_groupId > label > div > div > span > span:nth-child(3) > span > a').attributes['href'].nodeValue")
-        self.logger.info("新建主机组" + NewUrl)
+        title_elements = await self.task_page.Jx('//*[@id="DeploymentGroup_groupId"]/label/div/div/span/span[3]/span/a')
+        newUrl = ""
+        for item in title_elements:
+            newUrl = await (await item.getProperty('href')).jsonValue()
+        self.logger.info("新建主机组" + newUrl)
         await newHostGroup(self, NewUrl)
         await self.task_page.click("#DeploymentGroup_groupId_button")
         self.logger.info("刷新主机组")
