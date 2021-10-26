@@ -11,24 +11,26 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    # '项目管理': [['week_new_project', 0]],
-    '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
-    'CloudIDE': [['open_ide_task', 0]],
-    '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
-    '发布': [['upload_task', 0]],
-    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
-    '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
-    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
-    '函数工作流': [['new_fun_task', 0]],
-    '使用API Explorer完在线调试': 'api_explorer_task',
-    '使用API Explorer在线调试': 'api2_explorer_task',
-    '使用Devstar生成代码工程': 'dev_star_task',
-    '浏览Codelabs代码示例': 'view_code_task',
-    '体验DevStar快速生成代码': 'fast_dev_star',
+    # '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    # # '项目管理': [['week_new_project', 0]],
+    # '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
+    # 'CloudIDE': [['open_ide_task', 0]],
+    # '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
+    '编译构建': [['week_new_compile_build', 0]],
+    '部署': [['week_new_deploy_task', 0]],
+    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    # '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
+    # '发布': [['upload_task', 0]],
+    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
+    # '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
+    # 'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
+    # '函数工作流': [['new_fun_task', 0]],
+    # '使用API Explorer完在线调试': 'api_explorer_task',
+    # '使用API Explorer在线调试': 'api2_explorer_task',
+    # '使用Devstar生成代码工程': 'dev_star_task',
+    # '浏览Codelabs代码示例': 'view_code_task',
+    # '体验DevStar快速生成代码': 'fast_dev_star',
 }
 
 init_name_map = {
@@ -324,13 +326,29 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('.button-group .devui-btn-stress')
         self.logger.info("选择构建模板")
         await asyncio.sleep(5)
-        template = await self.task_page.querySelectorAll('.template-content li.template-item')
-        self.logger.info("选择空白构建")
-        await template[3].click()
+
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.mt10.ng-star-inserted > d-button > button').click() }''')
+        self.logger.info("查看更多")
+
+        for i in range(1, 29):
+            el = "#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.template-content > ul > li:nth-child(" + i + ") > div > div.name.over-flow-ellipsis"
+            title = await self.task_page.Jeval(el, "attr => attr.getAttribute('title')")
+            if title == "空白构建模板":
+                elPath = "\'\'\'() =>{ document.querySelector(\'" + el + "\').click() }\'\'\'"
+                await self.task_page.evaluate(elPath)
+                self.logger.info("选择空白构建")
+                break;
+
+        # template = await self.task_page.querySelectorAll('.template-content li.template-item')
+        # self.logger.info("选择空白构建")
+        # await template[3].click()
         await asyncio.sleep(1)
+
+
         await self.task_page.click('.button-group .devui-btn-stress')
-        await asyncio.sleep(5)
         self.logger.info("添加步骤")
+        await asyncio.sleep(5)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > edit > d-fullscreen > div > div > div.positon-relative.buildstep-wrapper.ng-star-inserted > d-splitter > d-splitter-pane:nth-child(2) > div > div > div > extend-plugins-render > div > extend-plugins-list > div.task-detail-cardlist.fn-clear-float > div:nth-child(3)').click() }''')
         self.logger.info("添加shell")
@@ -455,8 +473,7 @@ class BaseHuaWei(BaseClient):
 
 
 
-        NewUrl = await self.task_page.evaluate(
-            '''() =>{ document.querySelector('#DeploymentGroup_groupId > label > div > div > span > span:nth-child(3) > span > a').attributes["href"].nodeValue; }''')
+        NewUrl = await self.task_page.querySelector("#DeploymentGroup_groupId > label > div > div > span > span:nth-child(3) > span > a').attributes['href'].nodeValue")
         self.logger.info("新建主机组" + NewUrl)
         await newHostGroup(self, NewUrl)
         await self.task_page.click("#DeploymentGroup_groupId_button")
