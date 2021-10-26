@@ -336,8 +336,7 @@ class BaseHuaWei(BaseClient):
             title = await self.task_page.Jeval(el, "attr => attr.getAttribute('title')")
             self.logger.info(title)
             if title == "空白构建模板":
-                elPath = "\'\'\'() =>{ document.querySelector(\'" + el + "\').click() }\'\'\'"
-                await self.task_page.evaluate(elPath)
+                await self.task_page.click("#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.template-content > ul > li:nth-child(" + str(i) + ") > div > div.name.over-flow-ellipsis")
                 self.logger.info("选择空白构建")
                 break;
 
