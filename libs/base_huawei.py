@@ -328,7 +328,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
 
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.ng-star-inserted > d-button > button > span').click() }''')
+                '''() =>{ document.querySelector('div.step-body div.template-wraper div.mt10.ng-star-inserted button.devui-btn').click() }''')
         self.logger.info("查看更多")
         await asyncio.sleep(3)
 
@@ -443,6 +443,52 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('.deployman-create-content__button-group .devui-btn-primary')
         await asyncio.sleep(3)
 
+    async def newHostGroup(self, newHostGroupUrl):
+        page = await self.browser.newPage()
+        await page.goto(newHostGroupUrl, {'waitUntil': 'load'})
+        self.logger.info("--主机组管理")
+        await asyncio.sleep(5)
+        try:
+            await page.type('#app-devcloud-frameworks > div > ng-component > div > hostgroup-info > div > d-tabs > div > div > basic-info > div > div > div:nth-child(1) > input', "linux")
+            self.logger.info("--设置主机名称")
+            await asyncio.sleep(1)
+            await page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > hostgroup-info > div > d-tabs > div > div > basic-info > div > div > div.btn-box > div.margin-right-s > d-button > button').click(); }''')
+            self.logger.info("--保存信息")
+            await asyncio.sleep(3)
+            await page.click("#addHostBtn")
+            self.logger.info("--添加主机")
+            await asyncio.sleep(3)
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(3) > div.ext-form-item-content > input', "linux-LYT")
+            self.logger.info("--设置主机名称")
+            await asyncio.sleep(1)
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(5) > div.ext-form-item-content > input', "47.92.216.67")
+            self.logger.info("--设置主机IP")
+            await asyncio.sleep(1)
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(13) > div.ext-form-item-content > input', "user"+self.username)
+            self.logger.info("--设置主机用户名")
+            await asyncio.sleep(1)
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(14) > div.ext-form-item-content > d-form-control > div.devui-form-control-container > input', self.password)
+            self.logger.info("--设置主机密码")
+            await asyncio.sleep(1)
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(15) > div.ext-form-item-content > input', "22")
+            self.logger.info("--设置主机端口")
+            await asyncio.sleep(1)
+            await page.evaluate(
+                '''() =>{ document.querySelector('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > label > d-checkbox > div > label > span').click(); }''')
+            self.logger.info("--勾选隐私条款")
+            await asyncio.sleep(1)
+            await page.evaluate(
+                '''() =>{ document.querySelector('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div.button-container > d-button.mr10.ng-star-inserted > button').click(); }''')
+            self.logger.info("--确认添加主机")
+            self.logger.info("--等待连通性验证")
+            await asyncio.sleep(10)
+        except Exception as e:
+            self.logger.error(e)
+            await page.close()
+        finally:
+            await page.close()
+
     async def week_new_deploy_task(self):
         await asyncio.sleep(8)
         await self.task_page.click('#taskCreate')
@@ -493,57 +539,6 @@ class BaseHuaWei(BaseClient):
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > template-form > div > form > div.deployman-create-content__button-group.ng-star-inserted > d-button:nth-child(2) > button').click(); }''')
         await asyncio.sleep(1)
-
-    async def newHostGroup(self, newHostGroupUrl):
-        page = await self.browser.newPage()
-        await page.goto(newHostGroupUrl, {'waitUntil': 'load'})
-        self.logger.info("--主机组管理")
-        await asyncio.sleep(5)
-        try:
-            await page.type('#app-devcloud-frameworks > div > ng-component > div > hostgroup-info > div > d-tabs > div > div > basic-info > div > div > div:nth-child(1) > input', "linux")
-            self.logger.info("--设置主机名称")
-            await asyncio.sleep(1)
-            await page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > hostgroup-info > div > d-tabs > div > div > basic-info > div > div > div.btn-box > div.margin-right-s > d-button > button').click(); }''')
-            self.logger.info("--保存信息")
-            await asyncio.sleep(3)
-            await page.click("#addHostBtn")
-            self.logger.info("--添加主机")
-            await asyncio.sleep(3)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(3) > div.ext-form-item-content > input', "linux-LYT")
-            self.logger.info("--设置主机名称")
-            await asyncio.sleep(1)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(5) > div.ext-form-item-content > input', "47.92.216.67")
-            self.logger.info("--设置主机IP")
-            await asyncio.sleep(1)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(13) > div.ext-form-item-content > input', "user"+self.username)
-            self.logger.info("--设置主机用户名")
-            await asyncio.sleep(1)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(14) > div.ext-form-item-content > d-form-control > div.devui-form-control-container > input', self.password)
-            self.logger.info("--设置主机密码")
-            await asyncio.sleep(1)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(15) > div.ext-form-item-content > input', "22")
-            self.logger.info("--设置主机端口")
-            await asyncio.sleep(1)
-            await page.evaluate(
-                '''() =>{ document.querySelector('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > label > d-checkbox > div > label > span').click(); }''')
-            self.logger.info("--勾选隐私条款")
-            await asyncio.sleep(1)
-            await page.evaluate(
-                '''() =>{ document.querySelector('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div.button-container > d-button.mr10.ng-star-inserted > button').click(); }''')
-            self.logger.info("--确认添加主机")
-            self.logger.info("--等待连通性验证")
-            await asyncio.sleep(10)
-        except Exception as e:
-            self.logger.error(e)
-            await page.close()
-        finally:
-            await page.close()
-
-
-        
-
-
 
     async def deploy_task(self):
         await asyncio.sleep(3)
