@@ -335,6 +335,7 @@ class BaseHuaWei(BaseClient):
         for i in range(1, 29):
             el = "#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.template-content > ul > li:nth-child(" + i + ") > div > div.name.over-flow-ellipsis"
             title = await self.task_page.Jeval(el, "attr => attr.getAttribute('title')")
+            self.logger.info(title)
             if title == "空白构建模板":
                 elPath = "\'\'\'() =>{ document.querySelector(\'" + el + "\').click() }\'\'\'"
                 await self.task_page.evaluate(elPath)
@@ -521,11 +522,11 @@ class BaseHuaWei(BaseClient):
 
 
         title_elements = await self.task_page.Jx('//*[@id="DeploymentGroup_groupId"]/label/div/div/span/span[3]/span/a')
-        newUrl = ""
+        newHostGroupUrl = ""
         for item in title_elements:
-            newUrl = await (await item.getProperty('href')).jsonValue()
-        self.logger.info("新建主机组" + newUrl)
-        await self.newHostGroup(self, newUrl)
+            newHostGroupUrl = await (await item.getProperty('href')).jsonValue()
+        self.logger.info("新建主机组" + newHostGroupUrl)
+        await self.newHostGroup(self, newHostGroupUrl)
         await self.task_page.click("#DeploymentGroup_groupId_button")
         self.logger.info("刷新主机组")
 
