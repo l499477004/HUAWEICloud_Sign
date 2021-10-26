@@ -328,7 +328,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
 
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.ng-star-inserted > d-button > button').click() }''')
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > step-switcher > div > div.step-body.positon-relative > app-create-template-select > div > div.ng-star-inserted > d-button > button > span').click() }''')
         self.logger.info("查看更多")
         await asyncio.sleep(3)
 
@@ -479,7 +479,7 @@ class BaseHuaWei(BaseClient):
         for item in title_elements:
             newUrl = await (await item.getProperty('href')).jsonValue()
         self.logger.info("新建主机组" + newUrl)
-        await newHostGroup(self, NewUrl)
+        await newHostGroup(self, newUrl)
         await self.task_page.click("#DeploymentGroup_groupId_button")
         self.logger.info("刷新主机组")
 
