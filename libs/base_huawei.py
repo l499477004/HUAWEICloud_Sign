@@ -20,8 +20,8 @@ name_map = {
     # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
     '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
     '发布': [['upload_task', 0]],
-    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    '流水线': [['week_new_pipeline', 0]],
+    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # '流水线': [['week_new_pipeline', 0]],
     '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
     '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
     'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
@@ -719,7 +719,8 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         caseName = ''.join(random.choices(string.ascii_letters, k=6))
         await self.task_page.type('#caseName', caseName)
-        await self.task_page.click('div.footer button.devui-btn.devui-btn-stress.devui-btn-md.devui-btn-default')
+        await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn.devui-btn-stress.devui-btn-md.devui-btn-default')
+        self.logger.info("保存")
         await asyncio.sleep(5)
 
     async def run_test_task(self):
@@ -777,12 +778,18 @@ class BaseHuaWei(BaseClient):
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#testtype_1 > a').click() }''')
         await asyncio.sleep(5)
+
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div > div > div.create-case > d-button > button').click() }''')
+        await asyncio.sleep(3)
+
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case .devui-btn-primary')
         await asyncio.sleep(2)
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         await asyncio.sleep(1)
-        await self.task_page.click('div.footer d-button:nth-child(2) .devui-btn-stress')
+        await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn.devui-btn-stress.devui-btn-md.devui-btn-default')
+        self.logger.info("保存")
         await asyncio.sleep(3)
 
     async def new_new_api_task(self):
