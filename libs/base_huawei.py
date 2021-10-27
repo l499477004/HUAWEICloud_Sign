@@ -350,9 +350,12 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(3)
         # await self.task_page.click('.task-detail-cardlist .card-li:nth-child(3) .add-btn')
         # await asyncio.sleep(2)
-        await self.task_page.click('.button-group .devui-btn-stress')
+        # await self.task_page.click('.button-group .devui-btn-stress')
+        # await asyncio.sleep(3)
+        # await self.task_page.click('#choisModels_new')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > edit > d-fullscreen > div > div > div.step-footer > div > d-button:nth-child(2) > button').click() }''')
         await asyncio.sleep(3)
-        await self.task_page.click('#choisModels_new')
         self.logger.info("执行构建")
         await asyncio.sleep(10)
 
@@ -475,9 +478,9 @@ class BaseHuaWei(BaseClient):
             await page.type('#app-devcloud-frameworks > div > ng-component > div > hostgroup-info > div > d-tabs > div > div > basic-info > div > div > div:nth-child(1) > input', "linux")
             await asyncio.sleep(1)
             await page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > hostgroup-info > div > d-tabs > div > div > basic-info > div > div > div.btn-box > div.margin-right-s > d-button > button').click(); }''')
+                '''() =>{ document.querySelector('div.btn-box button.devui-btn-primary').click(); }''')
             await asyncio.sleep(3)
-            await page.click("#addHostBtn")
+            await page.click("div.btn-group d-button:nth-child(2) button.devui-btn-primary")
             await asyncio.sleep(3)
             await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(3) > div.ext-form-item-content > input', "linux-LYT")
             await asyncio.sleep(1)
@@ -538,41 +541,31 @@ class BaseHuaWei(BaseClient):
         # await self._close_test()
         # await self._tab_api_test()
         await self.task_page.click("#testtype_1 a")
-        self.logger.info("跳转至接口自动化选卡")
         await asyncio.sleep(3)
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div > div > div > d-button.mr4.ng-star-inserted > button').click(); }''')
-        self.logger.info("新建接口测试套件")
         await asyncio.sleep(2)
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
-        self.logger.info("填写接口自动化套件名称")
         await asyncio.sleep(1)
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div.add-container.ng-star-inserted > create-test-suite > div > div > div > form > div.ts-form-content-left > div.mt-10.ng-star-inserted > suite-case > div > div.no-data-tips.ng-star-inserted > div > span.addNow').click(); }''')
-        self.logger.info("选择用例")
         await asyncio.sleep(3)
         await self.task_page.type('#modal-modal > div > div > ng-component > div > div.modal-body > div.listBody.clearBoth > d-splitter > d-splitter-pane:nth-child(2) > div.clear-fix.clearBoth > d-search > div > input', "10010")
-        self.logger.info("填写用例编号")
         await asyncio.sleep(1)
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#modal-modal > div > div > ng-component > div > div.modal-body > div.listBody.clearBoth > d-splitter > d-splitter-pane:nth-child(2) > div.clear-fix.clearBoth > d-search > div > span.devui-search-icon.devui-search-icon-sm').click(); }''')
-        self.logger.info("搜索用例")
         await asyncio.sleep(3)
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#modal-modal > div > div > ng-component > div > div.modal-body > div.listBody.clearBoth > d-splitter > d-splitter-pane:nth-child(2) > div.add-case-list-wrap > mutual-item-list > div.data-list > d-data-table > div > div > div > table > tbody > tr > td.devui-checkable-cell > d-checkbox > div > label > span').click(); }''')
-        self.logger.info("选择用例")
         await asyncio.sleep(1)
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#modal-modal > div > div > ng-component > div > div.modal-body > div.modal-footer > d-button:nth-child(1) > button').click(); }''')
-        self.logger.info("确认选择用例")
         await asyncio.sleep(3)
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div.add-container.ng-star-inserted > create-test-suite > div > div > div > div.confirmBtn > d-button.ave-button-margin-right > button').click(); }''')
-        self.logger.info("保存接口测试套件")
         await asyncio.sleep(3)
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#operate_serviceType > i.icon.icon-run.ng-star-inserted').click(); }''')
-        self.logger.info("执行接口测试套件")
         await asyncio.sleep(5)
 
     async def week_new_pipeline(self):
@@ -586,8 +579,8 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(1)
         await self.task_page.click('#echoTestButtonOk')
         await asyncio.sleep(5)
-        await self.task_page.click('#startPipeBtn')
-        await asyncio.sleep(1)
+        await self.task_page.click('#pipeline_task_btn_save_run')
+        await asyncio.sleep(5)
 
         # dropdowns = await self.task_page.querySelectorAll('.devui-dropup')
         # for dropdown in dropdowns:
@@ -782,16 +775,12 @@ class BaseHuaWei(BaseClient):
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#testtype_1 > a').click() }''')
         await asyncio.sleep(5)
-        self.logger.info("跳转至接口测试选项卡")
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case .devui-btn-primary')
-        self.logger.info("新建接口测试套件用例")
         await asyncio.sleep(2)
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
-        self.logger.info("填写接口自动化套件名称")
         await asyncio.sleep(1)
         await self.task_page.click('div.footer d-button:nth-child(2) .devui-btn-stress')
-        self.logger.info("保存接口自动化套件用例")
         await asyncio.sleep(3)
 
     async def new_new_api_task(self):
@@ -1197,6 +1186,13 @@ class BaseHuaWei(BaseClient):
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#add-member').click() }''')
         await asyncio.sleep(1)
+
+        # 检查是否已添加
+        trList = await self.task_page.querySelectorAll("table tbody tr")
+        if len(trList) >= 2:
+            self.logger.info("该项目已添加成员")
+            return
+
         # 点击“从本企业用户”
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#cdk-overlay-0 > div > ul > li:nth-child(1) > a').click() }''')
