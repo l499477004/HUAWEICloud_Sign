@@ -697,23 +697,23 @@ class BaseHuaWei(BaseClient):
 
     async def new_test_task(self):
         await asyncio.sleep(15)
-        # try:
-        #     await self.task_page.click('#global-guidelines .icon-close')
-        # except Exception as e:
-        #     self.logger.debug(e)
+        try:
+            await self.task_page.click('#global-guidelines .icon-close')
+        except Exception as e:
+            self.logger.debug(e)
 
-        # await asyncio.sleep(1)
+        await asyncio.sleep(1)
 
-        # try:
-        #     await self.task_page.click('.guide-container .icon-close')
-        # except Exception as e:
-        #     self.logger.debug(e)
+        try:
+            await self.task_page.click('.guide-container .icon-close')
+        except Exception as e:
+            self.logger.debug(e)
 
-        # await self.task_page.evaluate(
-        #         '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div > div > div.create-case > d-button > button').click() }''')
-        # await asyncio.sleep(2)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div > div > div.create-case > d-button > button').click() }''')
+        await asyncio.sleep(2)
 
-        # await asyncio.sleep(1)
+        await asyncio.sleep(1)
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case button.devui-btn.devui-btn-primary.devui-btn-md.devui-btn-default')
         await asyncio.sleep(5)
