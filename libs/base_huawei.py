@@ -11,26 +11,27 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    # '项目管理': [['week_new_project', 0]],
-    '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
-    'CloudIDE': [['open_ide_task', 0]],
-    '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    # '编译构建': [['week_new_compile_build', 0]],
-    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
-    '发布': [['upload_task', 0]],
-    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    # '流水线': [['week_new_pipeline', 0]],
-    '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
-    '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
-    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
-    '函数工作流': [['new_fun_task', 0]],
-    '使用API Explorer完在线调试': 'api_explorer_task',
-    '使用API Explorer在线调试': 'api2_explorer_task',
-    '使用Devstar生成代码工程': 'dev_star_task',
-    '浏览Codelabs代码示例': 'view_code_task',
-    '体验DevStar快速生成代码': 'fast_dev_star',
+    # '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    # # '项目管理': [['week_new_project', 0]],
+    # '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
+    # 'CloudIDE': [['open_ide_task', 0]],
+    # '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
+    # # '编译构建': [['week_new_compile_build', 0]],
+    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    # '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
+    # '发布': [['upload_task', 0]],
+    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # # '流水线': [['week_new_pipeline', 0]],
+    # '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
+    # '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
+    # 'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
+    # '函数工作流': [['new_fun_task', 0]],
+    # '使用API Explorer完在线调试': 'api_explorer_task',
+    # '使用API Explorer在线调试': 'api2_explorer_task',
+    # '使用Devstar生成代码工程': 'dev_star_task',
+    # '浏览Codelabs代码示例': 'view_code_task',
+    # '体验DevStar快速生成代码': 'fast_dev_star',
+    '接口测试': [['week_new_api_test_task', 0]],
 }
 
 init_name_map = {
@@ -362,16 +363,22 @@ class BaseHuaWei(BaseClient):
 
     async def compile_build_task(self):
         await asyncio.sleep(5)
-        node = 'div.devui-table-view tbody tr:nth-child(1) .operation-btn-section .devui-btn:nth-child(1)'
-        await self.task_page.evaluate('''() =>{ document.querySelector('%s').click(); }''' % node)
-        await asyncio.sleep(1)
+        try:
+            node = 'div.devui-table-view tbody tr:nth-child(1) .operation-btn-section .devui-btn:nth-child(1)'
+            await self.task_page.evaluate('''() =>{ document.querySelector('%s').click(); }''' % node)
+            await asyncio.sleep(1)
+        except Exception as e:
+            self.logger.info(e)
+            self.logger.info("已完成构建")
+            return
 
-        node = 'ul.devui-dropdown-menu li:nth-child(1) a'
-        await self.task_page.evaluate('''() =>{ document.querySelector('%s').click(); }''' % node)
-        await asyncio.sleep(2)
-        # 修改时间：2021年10月15日14:55:31
-        # await self.task_page.click('.modal-footer .devui-btn-primary')
-        await self.task_page.click('#btn-confirm .devui-btn-primary')
+            node = 'ul.devui-dropdown-menu li:nth-child(1) a'
+            await self.task_page.evaluate('''() =>{ document.querySelector('%s').click(); }''' % node)
+            await asyncio.sleep(2)
+            # 修改时间：2021年10月15日14:55:31
+            # await self.task_page.click('.modal-footer .devui-btn-primary')
+            await self.task_page.click('#btn-confirm .devui-btn-primary')
+
         await asyncio.sleep(8)
 
     async def check_code_task(self):
@@ -786,7 +793,7 @@ class BaseHuaWei(BaseClient):
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case .devui-btn-primary')
         await asyncio.sleep(2)
-        title = await element.Jeval('div.add-case-box div.top div.class', 'el => el.textContent')
+        title = await page.Jx('//*[@id="app-devcloud-frameworks"]/div/ng-component/ng-component/div/ng-component/new-test-design/div/d-splitter/d-splitter-pane[2]/div/div/test-case-operations/div[2]/add-api-case/div/div/div/div')
         self.logger.info("title=" + title)
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         await asyncio.sleep(1)
