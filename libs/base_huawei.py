@@ -795,7 +795,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(2)
         title = await self.task_page.Jx('//*[@id="app-devcloud-frameworks"]/div/ng-component/ng-component/div/ng-component/new-test-design/div/d-splitter/d-splitter-pane[2]/div/div/test-case-operations/div[2]/add-api-case/div/div/div/div')
         for el in title:
-            self.logger.info(el)
+            self.logger.info(el.text())
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         await asyncio.sleep(1)
         await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn-stress')
