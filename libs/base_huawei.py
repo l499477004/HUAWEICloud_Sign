@@ -793,7 +793,7 @@ class BaseHuaWei(BaseClient):
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case .devui-btn-primary')
         await asyncio.sleep(2)
-        title = await page.Jx('//*[@id="app-devcloud-frameworks"]/div/ng-component/ng-component/div/ng-component/new-test-design/div/d-splitter/d-splitter-pane[2]/div/div/test-case-operations/div[2]/add-api-case/div/div/div/div')
+        title = await self.task_page.Jx('//*[@id="app-devcloud-frameworks"]/div/ng-component/ng-component/div/ng-component/new-test-design/div/d-splitter/d-splitter-pane[2]/div/div/test-case-operations/div[2]/add-api-case/div/div/div/div')
         self.logger.info("title=" + title)
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         await asyncio.sleep(1)
