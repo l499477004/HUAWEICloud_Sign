@@ -138,7 +138,7 @@ class BaseHuaWei(BaseClient):
 
         await self.page.click(task_node)
         await asyncio.sleep(2)
-        self.logger.info(f'{task_name}')
+        self.logger.warning(f'{task_name}')
 
         try:
             self.task_page = await self.get_new_page()
@@ -540,6 +540,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(10)
         # await self._close_test()
         # await self._tab_api_test()
+        await self.task_page.waitForSelector('#testtype_1', {'visible': True})
         await self.task_page.click("#testtype_1 a")
         await asyncio.sleep(3)
         await self.task_page.evaluate(
@@ -570,6 +571,7 @@ class BaseHuaWei(BaseClient):
 
     async def week_new_pipeline(self):
         await asyncio.sleep(5)
+        await self.task_page.waitForSelector('#createPipeline', {'visible': True})
         await self.task_page.click('#createPipeline')
         await asyncio.sleep(2)
         await self.task_page.click('#echoTestNextStep')
