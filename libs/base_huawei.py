@@ -16,8 +16,8 @@ name_map = {
     '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
     'CloudIDE': [['open_ide_task', 0]],
     '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    '编译构建': [['week_new_compile_build', 0]],
-    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    # '编译构建': [['week_new_compile_build', 0]],
+    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
     '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
     '发布': [['upload_task', 0]],
     '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
@@ -346,7 +346,7 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('.button-group .devui-btn-stress')
         await asyncio.sleep(5)
         await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > edit > d-fullscreen > div > div > div.positon-relative.buildstep-wrapper.ng-star-inserted > d-splitter > d-splitter-pane:nth-child(2) > div > div > div > extend-plugins-render > div > extend-plugins-list > div.task-detail-cardlist.fn-clear-float > div:nth-child(3)').click() }''')
+                '''() =>{ document.querySelector('div.task-detail-cardlist div:nth-child(3) div.btn-wrapper .add-btn').click() }''')
         await asyncio.sleep(3)
         # await self.task_page.click('.task-detail-cardlist .card-li:nth-child(3) .add-btn')
         # await asyncio.sleep(2)
@@ -786,11 +786,14 @@ class BaseHuaWei(BaseClient):
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case .devui-btn-primary')
         await asyncio.sleep(2)
+        title = await element.Jeval('div.add-case-box div.top div.class', 'el => el.textContent')
+        self.logger.info("title=" + title)
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         await asyncio.sleep(1)
-        await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn.devui-btn-stress.devui-btn-md.devui-btn-default')
+        await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn-stress')
         self.logger.info("保存")
         await asyncio.sleep(3)
+        self.logger.info(self.task_page.url)
 
     async def new_new_api_task(self):
         await asyncio.sleep(15)
