@@ -582,10 +582,20 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('#createPipeline')
         await asyncio.sleep(2)
         await self.task_page.click('#echoTestNextStep')
-        await asyncio.sleep(1)
-        await self.task_page.evaluate(
-            '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > div.content > select-template > div > div.select-template-content > div.template-item.dontUse > div.template-content > div.template-title.over-flow-ellipsis').click(); }''')
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
+        await self.task_page.click('div.content span.button-content')
+        await asyncio.sleep(2)
+
+        for i in range(1, 8):
+            el = "#app-devcloud-frameworks > div > ng-component > ng-component > div > div.content > select-template > div > div > div > div > div:nth-child(" + str(i) + ") > div > div.template-content > div"
+            title = await self.task_page.Jeval(el, "attr => attr.getAttribute('title')")
+            if title == "空白模板":
+                await self.task_page.click(el)
+                break;
+
+        # await self.task_page.evaluate(
+        #     '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > div.content > select-template > div > div.select-template-content > div.template-item.dontUse > div.template-content > div.template-title.over-flow-ellipsis').click(); }''')
+        # await asyncio.sleep(1)
         await self.task_page.click('#echoTestButtonOk')
         await asyncio.sleep(5)
         await self.task_page.click('#pipeline_task_btn_save_run')
@@ -793,17 +803,32 @@ class BaseHuaWei(BaseClient):
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
         await self.task_page.click('div.create-case .devui-btn-primary')
         await asyncio.sleep(2)
-        title = await self.task_page.Jx('//*[@id="app-devcloud-frameworks"]/div/ng-component/ng-component/div/ng-component/new-test-design/div/d-splitter/d-splitter-pane[2]/div/div/test-case-operations/div[2]/add-api-case/div/div/div/div')
-        for el in title:
-            content = await self.task_page.evaluate('item => item.textContent', el)
-            self.logger.info(el)
-            self.logger.info(content)
         await self.task_page.type('#caseName', ''.join(random.choices(string.ascii_letters, k=6)))
         await asyncio.sleep(1)
+        await self.task_page.type('#description', 'Description '.join(random.choices(string.ascii_letters, k=6)))
+        await asyncio.sleep(1)
+        await self.task_page.type('#preparation', 'Preparation '.join(random.choices(string.ascii_letters, k=6)))
+        await asyncio.sleep(1)
+        await self.task_page.type('#testStep', 'TestStep '.join(random.choices(string.ascii_letters, k=6)))
+        await asyncio.sleep(1)
+        await self.task_page.type('#expectResult', 'ExpectResult '.join(random.choices(string.ascii_letters, k=6)))
+        await asyncio.sleep(1)
+        await self.task_page.type('#caseNo', '11111')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('div.content-right div:nth-child(8) a.issue-name').click() }''')
+        await asyncio.sleep(3)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('div.modal-body div.devui-table-view table tbody tr:nth-child(1) td:nth-child(1) span.devui-radio-material').click() }''')
+        await asyncio.sleep(1)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('div.modal-footer d-button:nth-child(1) button').click() }''')
+        await asyncio.sleep(3)
+
         await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn-stress')
         self.logger.info("保存")
         await asyncio.sleep(3)
-        self.logger.info(self.task_page.url)
+        # self.logger.info(self.task_page.url)
 
     async def new_new_api_task(self):
         await asyncio.sleep(15)
