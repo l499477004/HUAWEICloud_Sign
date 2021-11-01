@@ -11,27 +11,27 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    # '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    # # '项目管理': [['week_new_project', 0]],
-    # '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
-    # 'CloudIDE': [['open_ide_task', 0]],
-    # '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    # # '编译构建': [['week_new_compile_build', 0]],
-    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    # '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
-    # '发布': [['upload_task', 0]],
-    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    # # '流水线': [['week_new_pipeline', 0]],
-    # '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
-    # '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
+    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    # '项目管理': [['week_new_project', 0]],
+    '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
+    'CloudIDE': [['open_ide_task', 0]],
+    '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
+    # '编译构建': [['week_new_compile_build', 0]],
+    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
+    '发布': [['upload_task', 0]],
+    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # '流水线': [['week_new_pipeline', 0]],
+    '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
+    '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
     'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
-    # '函数工作流': [['new_fun_task', 0]],
-    # '使用API Explorer完在线调试': 'api_explorer_task',
-    # '使用API Explorer在线调试': 'api2_explorer_task',
-    # '使用Devstar生成代码工程': 'dev_star_task',
-    # '浏览Codelabs代码示例': 'view_code_task',
-    # '体验DevStar快速生成代码': 'fast_dev_star',
-    # # '接口测试': [['week_new_api_test_task', 0]],
+    '函数工作流': [['new_fun_task', 0]],
+    '使用API Explorer完在线调试': 'api_explorer_task',
+    '使用API Explorer在线调试': 'api2_explorer_task',
+    '使用Devstar生成代码工程': 'dev_star_task',
+    '浏览Codelabs代码示例': 'view_code_task',
+    '体验DevStar快速生成代码': 'fast_dev_star',
+    # '接口测试': [['week_new_api_test_task', 0]],
 }
 
 init_name_map = {
@@ -867,7 +867,6 @@ class BaseHuaWei(BaseClient):
             self.logger.info("确认下线API")
         except Exception as e:
             self.logger.info("已下线API")
-            await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
             await asyncio.sleep(8)
             self.logger.error(e)
             raise e
@@ -880,7 +879,7 @@ class BaseHuaWei(BaseClient):
             await self.task_page.click("#deleteAPI")
             await asyncio.sleep(1)
             self.logger.info("删除API")
-            await self.task_page.type("#deleteContent-text", "DELETE")
+            await self.task_page.type("#deleteContent-text [type='text']", "DELETE")
             await asyncio.sleep(1)
             self.logger.info("输入DELETE")
             await self.task_page.evaluate(
@@ -893,8 +892,6 @@ class BaseHuaWei(BaseClient):
             raise e
         await asyncio.sleep(5)
 
-        await self.task_page.evaluate(
-            '''() =>{ document.querySelector('#openapi_group > tbody > tr > td.grp-tbl-head-col > a').click() }''')
         await asyncio.sleep(1)
         self.logger.info("进入API分组")
 
@@ -902,7 +899,7 @@ class BaseHuaWei(BaseClient):
             await self.task_page.click("#deletegroup")
             await asyncio.sleep(1)
             self.logger.info("删除API分组")
-            await self.task_page.type("#tiny-text", "DELETE")
+            await self.task_page.type("#tiny-text [type='text']", "DELETE")
             await asyncio.sleep(1)
             self.logger.info("输入DELETE")
             await self.task_page.click("#delG")
