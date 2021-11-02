@@ -12,16 +12,13 @@ from libs.base import BaseClient
 
 name_map = {
     '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    # '项目管理': [['week_new_project', 0]],
     '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
     'CloudIDE': [['open_ide_task', 0]],
     '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    # '编译构建': [['week_new_compile_build', 0]],
     '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
     '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
     '发布': [['upload_task', 0]],
     '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    # '流水线': [['week_new_pipeline', 0]],
     '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
     '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
     'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
@@ -31,7 +28,6 @@ name_map = {
     '使用Devstar生成代码工程': 'dev_star_task',
     '浏览Codelabs代码示例': 'view_code_task',
     '体验DevStar快速生成代码': 'fast_dev_star',
-    # '接口测试': [['week_new_api_test_task', 0]],
 }
 
 init_name_map = {
@@ -736,7 +732,9 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         caseName = ''.join(random.choices(string.ascii_letters, k=6))
         await self.task_page.type('#caseName', caseName)
-        await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn.devui-btn-stress.devui-btn-md.devui-btn-default')
+        wait asyncio.sleep(2)
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector('div.footer > d-button.ave-button-margin-right > button').click() }''')
         self.logger.info("保存")
         await asyncio.sleep(5)
 
