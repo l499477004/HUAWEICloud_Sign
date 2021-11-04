@@ -732,7 +732,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         caseName = ''.join(random.choices(string.ascii_letters, k=6))
         await self.task_page.type('#caseName', caseName)
-        wait asyncio.sleep(2)
+        await asyncio.sleep(2)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('div.footer > d-button.ave-button-margin-right > button').click() }''')
         self.logger.info("保存")
