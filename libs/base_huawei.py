@@ -11,23 +11,25 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
-    'CloudIDE': [['open_ide_task', 0]],
-    '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
-    '发布': [['upload_task', 0]],
-    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
-    '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
-    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
-    '函数工作流': [['new_fun_task', 0]],
-    '使用API Explorer完在线调试': 'api_explorer_task',
-    '使用API Explorer在线调试': 'api2_explorer_task',
-    '使用Devstar生成代码工程': 'dev_star_task',
-    '浏览Codelabs代码示例': 'view_code_task',
-    '体验DevStar快速生成代码': 'fast_dev_star',
+    # '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    # '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
+    # 'CloudIDE': [['open_ide_task', 0]],
+    # '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
+    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    # '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
+    # '发布': [['upload_task', 0]],
+    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # # '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
+    # '接口测试': [['api_test_task', 0]],
+    # '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
+    # 'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
+    # '函数工作流': [['new_fun_task', 0]],
+    # '使用API Explorer完在线调试': 'api_explorer_task',
+    # '使用API Explorer在线调试': 'api2_explorer_task',
+    # '使用Devstar生成代码工程': 'dev_star_task',
+    # '浏览Codelabs代码示例': 'view_code_task',
+    # '体验DevStar快速生成代码': 'fast_dev_star',
+    'APIG网关': [['new_new_api_task', 0]],
 }
 
 init_name_map = {
@@ -164,6 +166,7 @@ class BaseHuaWei(BaseClient):
             return True
 
     async def get_credit(self):
+        await asyncio.sleep(5)
         result = {'码豆': 0, 'uid': ''}
 
         async def intercept_response(response: Response):
@@ -846,14 +849,18 @@ class BaseHuaWei(BaseClient):
         self.logger.info(controlUrl)
 
         # 进入控制台
-        await self.task_page.evaluate(
+        try:
+            await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#overViewContent > div.pr > div.cti-clearfix.h341.sceneHeader > div.overview-console-btn > div:nth-child(2) > span > button > span').click() }''')
-        await asyncio.sleep(2)
-        self.logger.info('进入控制台概览')
-        await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#overViewContent > div.overviewCenter > div.pull-left.overviewPhysical > div.my-resource > div.cti-row.cti-cardlist > div:nth-child(2) > div').click() }''')
-        await asyncio.sleep(2)
-        self.logger.info('进入API管理')
+            await asyncio.sleep(2)
+            self.logger.info('进入控制台概览')
+            await self.task_page.evaluate(
+                    '''() =>{ document.querySelector('#overViewContent > div.overviewCenter > div.pull-left.overviewPhysical > div.my-resource > div.cti-row.cti-cardlist > div:nth-child(2) > div').click() }''')
+            await asyncio.sleep(2)
+            self.logger.info('进入API管理')
+        except Exception as e:
+            self.logger.info('none')
+            await asyncio.sleep(2)
 
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#openapi_list > tbody > tr > td:nth-child(2) > div > div:nth-child(1) > a').click() }''')
@@ -870,7 +877,7 @@ class BaseHuaWei(BaseClient):
             self.logger.info("确认下线API")
         except Exception as e:
             self.logger.info("已下线API")
-            await asyncio.sleep(8)
+            await asyncio.sleep(1)
             self.logger.error(e)
             raise e
 
