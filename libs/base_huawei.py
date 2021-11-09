@@ -878,7 +878,6 @@ class BaseHuaWei(BaseClient):
         except Exception as e:
             self.logger.info("已下线API")
             await asyncio.sleep(1)
-            self.logger.error(e)
             # raise e
 
         await self.task_page.click("#api_detail_refresh")
@@ -898,7 +897,6 @@ class BaseHuaWei(BaseClient):
             self.logger.info("确认删除API")
         except Exception as e:
             self.logger.info("已删除API")
-            self.logger.error(e)
             # raise e
         await asyncio.sleep(5)
 
@@ -917,7 +915,6 @@ class BaseHuaWei(BaseClient):
             self.logger.info("确认删除API分组")
         except Exception as e:
             self.logger.info("已删除API")
-            self.logger.error(e)
             # raise e
 
         await asyncio.sleep(3)
