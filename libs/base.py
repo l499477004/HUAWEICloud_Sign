@@ -55,10 +55,24 @@ class BaseClient:
         else:
             print('推送失败！')
 
+    @staticmethod
+    def pushPlusSend(content, title):
+        token = os.environ.get('PUSHPLUS_TOKEN')
+        url = 'http://www.pushplus.plus/send'
+        data = {
+            "token":token,
+            "title":title,
+            "content":content,
+            'template': 'json'
+        }
+        body=json.dumps(data).encode(encoding='utf-8')
+        headers = {'Content-Type':'application/json'}
+        requests.post(url,data=body,headers=headers)
+
     async def before_run(self):
         pass
 
-    async def after_run(self, **kwargs):
+    async def after_run(self, **kwargs): 
         pass
 
     async def after_handler(self, **kwargs):

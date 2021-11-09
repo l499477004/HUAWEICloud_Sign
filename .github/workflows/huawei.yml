@@ -10,6 +10,7 @@ on:
 env:
   DING_TOKEN: ${{ secrets.DING_TOKEN }}
   DING_SECRET: ${{ secrets.DING_SECRET }}
+  PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
 
 jobs:
   build:

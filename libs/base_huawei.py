@@ -53,6 +53,7 @@ class BaseHuaWei(BaseClient):
         self.home_url = None
         self.cancel = False
         self.header_url = None
+        self.resultsJSON = {}
 
     async def start(self):
         if self.page.url != self.url:
@@ -105,6 +106,7 @@ class BaseHuaWei(BaseClient):
             else:
                 _task_node = f'#{element_id} #{task_node}{i}'
                 task_name = str(await self.page.Jeval(f'{_task_node} h5', 'el => el.textContent')).strip()
+                self.resultsJSON = {task_name : 'NODONE'}
                 if not task_map.get(task_name):
                     continue
 
@@ -131,6 +133,7 @@ class BaseHuaWei(BaseClient):
 
         if await self.is_done(task_node, task_fun):
             self.logger.warning(f'{task_name} -> DONE.')
+            self.resultsJSON[{task_name}] = 'DONE'
             return True
 
         await self.page.click(task_node)
@@ -149,6 +152,7 @@ class BaseHuaWei(BaseClient):
             # await func()
             await asyncio.wait_for(func(), timeout=100.0)
             self.logger.warning(f'{task_name} -> DONE.')
+            self.resultsJSON[{task_name}] = 'DONE'
         except asyncio.TimeoutError as t:
             self.logger.debug(t)
             # await self.send_photo(self.task_page, task_fun)
@@ -160,7 +164,7 @@ class BaseHuaWei(BaseClient):
             return True
 
     async def get_credit(self):
-        result = {'credit': 0, 'uid': ''}
+        result = {'码豆': 0, 'uid': ''}
 
         async def intercept_response(response: Response):
             global uid
@@ -181,7 +185,8 @@ class BaseHuaWei(BaseClient):
 
             try:
                 s = await self.page.Jeval('#homeheader-coins', 'el => el.textContent')
-                result['credit'] = str(s).replace('码豆', '').strip()
+                result['码豆'] = str(s).replace('码豆', '').strip()
+                self.resultsJSON['码豆'] = str(s).replace('码豆', '').strip()
                 break
             except Exception as e:
                 self.logger.debug(e)
@@ -1130,6 +1135,7 @@ class BaseHuaWei(BaseClient):
         self.logger.info(f'码豆: {new_credit}')
         message = f'{user_name} -> {new_credit}'
         self.dingding_bot(message, '华为云码豆')
+        self.pushPlusSend(self.resultsJSON, '华为云码豆')
 
     async def delete_api_group(self):
         page = await self.browser.newPage()
