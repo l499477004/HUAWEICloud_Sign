@@ -889,7 +889,7 @@ class BaseHuaWei(BaseClient):
             await self.task_page.click("#deleteAPI")
             await asyncio.sleep(1)
             self.logger.info("删除API")
-            await self.task_page.type("#deleteContent-text [type='text']", "DELETE")
+            await self.task_page.type("#deleteContent-text", "DELETE")
             await asyncio.sleep(1)
             self.logger.info("输入DELETE")
             await self.task_page.evaluate(
@@ -909,7 +909,7 @@ class BaseHuaWei(BaseClient):
             await self.task_page.click("#deletegroup")
             await asyncio.sleep(1)
             self.logger.info("删除API分组")
-            await self.task_page.type("#tiny-text [type='text']", "DELETE")
+            await self.task_page.type("#tiny-text", "DELETE")
             await asyncio.sleep(1)
             self.logger.info("输入DELETE")
             await self.task_page.click("#delG")
