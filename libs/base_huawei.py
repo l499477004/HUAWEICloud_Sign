@@ -106,7 +106,7 @@ class BaseHuaWei(BaseClient):
             else:
                 _task_node = f'#{element_id} #{task_node}{i}'
                 task_name = str(await self.page.Jeval(f'{_task_node} h5', 'el => el.textContent')).strip()
-                self.resultsJSON = {task_name : 'NODONE'}
+                self.resultsJSON[f'{task_name}'] = 'NODONE'
                 if not task_map.get(task_name):
                     continue
 
@@ -133,7 +133,7 @@ class BaseHuaWei(BaseClient):
 
         if await self.is_done(task_node, task_fun):
             self.logger.warning(f'{task_name} -> DONE.')
-            self.resultsJSON[{task_name}] = 'DONE'
+            self.resultsJSON[f'{task_name}'] = 'DONE'
             return True
 
         await self.page.click(task_node)
@@ -152,7 +152,7 @@ class BaseHuaWei(BaseClient):
             # await func()
             await asyncio.wait_for(func(), timeout=100.0)
             self.logger.warning(f'{task_name} -> DONE.')
-            self.resultsJSON[{task_name}] = 'DONE'
+            self.resultsJSON[f'{task_name}'] = 'DONE'
         except asyncio.TimeoutError as t:
             self.logger.debug(t)
             # await self.send_photo(self.task_page, task_fun)
