@@ -805,14 +805,14 @@ class BaseHuaWei(BaseClient):
         # self.logger.info(self.task_page.url)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#testtype_1 > a').click() }''')
-        await asyncio.sleep(5)
+        await asyncio.sleep(8)
 
-        await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > ng-component > div > ng-component > new-test-design > div > d-splitter > d-splitter-pane.splitter-right.devui-splitter-pane > div > div > test-case-operations > div > div > div.create-case > d-button > button').click() }''')
-        await asyncio.sleep(3)
+        # await self.task_page.evaluate(
+        #         '''() =>{ document.querySelector('div.create-case d-button').click() }''')
+        # await asyncio.sleep(3)
 
         await self.task_page.waitForSelector('div.create-case', {'visible': True})
-        await self.task_page.click('div.create-case .devui-btn-primary')
+        await self.task_page.click('div.create-case d-button')
         await asyncio.sleep(2)
         caseName = ''.join(random.choices(string.ascii_letters, k=6))
         await self.task_page.type('#caseName', caseName)
@@ -829,7 +829,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(1)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('div.content-right div:nth-child(8) a.issue-name').click() }''')
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('div.modal-body div.devui-table-view table tbody tr:nth-child(1) td:nth-child(1) span.devui-radio-material').click() }''')
         await asyncio.sleep(1)
@@ -837,7 +837,7 @@ class BaseHuaWei(BaseClient):
                 '''() =>{ document.querySelector('div.modal-footer d-button:nth-child(1) button').click() }''')
         await asyncio.sleep(3)
 
-        await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn-stress')
+        await self.task_page.click('div.footer d-button:nth-child(2) button.devui-btn-stress span')
         self.logger.info("保存")
         await asyncio.sleep(3)
         # self.logger.info(self.task_page.url)
