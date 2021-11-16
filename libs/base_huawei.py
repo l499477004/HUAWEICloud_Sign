@@ -842,17 +842,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(3)
         # self.logger.info(self.task_page.url)
 
-    async def new_new_api_task(self):
-        await asyncio.sleep(15)
-        # await self.task_page.click('div.ti-modal-header ti-close')
-        # await asyncio.sleep(1)
-        urlHeader = self.task_page.url.split("groupDetail")
-        self.logger.info(urlHeader)
-        await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
-        await asyncio.sleep(8)
-        controlUrl = self.task_page.url
-        self.logger.info(controlUrl)
-
+    async def remove_api_task(self):
         # 进入控制台
         try:
             await self.task_page.evaluate(
@@ -924,7 +914,28 @@ class BaseHuaWei(BaseClient):
 
         await asyncio.sleep(3)
 
-
+    async def new_new_api_task(self):
+        await asyncio.sleep(15)
+        # 调试API
+        try:
+            await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#contentcontent_fugwff > div:nth-child(2) > div.ac-cloud-content > div > div.create-header-content > div.ac-pdTop-lg.ac-pdBottom-lg.ac-pdLeft-lg.ac-pdRight-lg > div > span > button').click() }''')
+            await asyncio.sleep(3)
+            await self.task_page.evaluate(
+                '''() =>{ document.querySelector('body > div.ti-intro-tip-flag.ng-isolate-scope.ti-tooltip.ti-intro-tip-modal.ti-tooltip-top-left > div.ti-tooltip-content.ti-intro-tooltip-content.ng-scope > ti-intro-content > div > div.ti-modal-footer > div > button').click() }''')
+            await asyncio.sleep(3)
+        except Exception as e:
+            self.logger.info('none')
+            await asyncio.sleep(2)
+        # await self.task_page.click('div.ti-modal-header ti-close')
+        # await asyncio.sleep(1)
+        urlHeader = self.task_page.url.split("groupDetail")
+        self.logger.info(urlHeader)
+        await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
+        await asyncio.sleep(8)
+        controlUrl = self.task_page.url
+        self.logger.info(controlUrl)
+        await self.remove_api_task()
 
     async def run_api_task(self):
         await asyncio.sleep(3)
@@ -939,10 +950,10 @@ class BaseHuaWei(BaseClient):
         await self.task_page.click('.ti-btn-danger.ml10.ng-binding')
 
     async def debug_api_task(self):
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#overViewContent > div.cti-clearfix > div.cti-fl-right > div:nth-child(1) > span > button').click() }''')
-        await asyncio.sleep(15)
+        await self.new_new_api_task()
 
     async def new_fun_task(self):
         url = self.task_page.url
