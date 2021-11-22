@@ -940,7 +940,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(8)
         controlUrl = self.task_page.url
         self.logger.info(controlUrl)
-        await self.remove_api_task()
+        # await self.remove_api_task()
 
     async def run_api_task(self):
         await asyncio.sleep(3)
@@ -958,6 +958,24 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#overViewContent > div.cti-clearfix > div.cti-fl-right > div:nth-child(1) > span > button').click() }''')
+        await asyncio.sleep(10)
+        keyName = self.task_page.url.split('/')
+        if keyName[6] == 'expdemo':
+            await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#contentcontent_fugwff > div:nth-child(2) > div.ac-cloud-content > div > div.create-header-content > div.ac-pdTop-lg.ac-pdBottom-lg.ac-pdLeft-lg.ac-pdRight-lg > div > span > button').click() }''')
+            await asyncio.sleep(5)
+            await self.task_page.evaluate(
+                    '''() =>{ document.querySelector('#send').click() }''')
+            await asyncio.sleep(3)
+        elif keyName[9] == 'apilist':
+            await self.task_page.evaluate(
+                '''() =>{ document.querySelector('body > div.ti-intro-tip-flag.ng-isolate-scope.ti-tooltip.ti-intro-tip-modal.ti-tooltip-top-left > div.ti-tooltip-content.ti-intro-tooltip-content.ng-scope > ti-intro-content > div > div.ti-modal-footer > div > button').click() }''')
+            await asyncio.sleep(5)
+            await self.task_page.evaluate(
+                    '''() =>{ document.querySelector('#send').click() }''')
+            await asyncio.sleep(3)
+
+        
         await self.new_new_api_task()
 
     async def new_fun_task(self):
