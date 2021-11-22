@@ -68,11 +68,11 @@ class BaseClient:
         }
         body=json.dumps(data).encode(encoding='utf-8')
         headers = {'Content-Type':'application/json'}
-        response = requests.post(url,data=body,headers=headers)
-        if not response['errcode']:
-            print('推送成功！')
-        else:
-            print('推送失败！')
+        requests.post(url,data=body,headers=headers)
+        # if not response['errcode']:
+        #     print('推送成功！')
+        # else:
+        #     print('推送失败！')
 
     async def before_run(self):
         pass

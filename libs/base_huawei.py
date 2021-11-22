@@ -895,10 +895,15 @@ class BaseHuaWei(BaseClient):
             # raise e
         await asyncio.sleep(5)
 
+
         await asyncio.sleep(1)
-        self.logger.info("进入API分组")
+        
 
         try:
+            await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#apig_multiLogical_openapi_group > span').click() }''')
+            await asyncio.sleep(5)
+            self.logger.info("进入API分组")
             await self.task_page.click("#deletegroup")
             await asyncio.sleep(1)
             self.logger.info("删除API分组")
@@ -909,7 +914,7 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(1)
             self.logger.info("确认删除API分组")
         except Exception as e:
-            self.logger.info("已删除API")
+            self.logger.info("已删除API分组")
             # raise e
 
         await asyncio.sleep(3)
