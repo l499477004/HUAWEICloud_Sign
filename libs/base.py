@@ -31,6 +31,7 @@ class BaseClient:
         self.ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'
         self.width = 1440
         self.height = 900
+        self.serverIP = os.environ.get('SERVER_IP')
     
     @staticmethod
     def dingding_bot(content, title='HW'):
