@@ -11,24 +11,24 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    # '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
     '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
-    'CloudIDE': [['open_ide_task', 0]],
-    '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
-    '发布': [['upload_task', 0]],
-    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
-    # '接口测试': [['api_test_task', 0]],
-    '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
-    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
-    '函数工作流': [['new_fun_task', 0]],
-    '使用API Explorer完在线调试': 'api_explorer_task',
-    '使用API Explorer在线调试': 'api2_explorer_task',
-    '使用Devstar生成代码工程': 'dev_star_task',
-    '浏览Codelabs代码示例': 'view_code_task',
-    '体验DevStar快速生成代码': 'fast_dev_star',
+    # 'CloudIDE': [['open_ide_task', 0]],
+    # '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
+    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    # '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
+    # '发布': [['upload_task', 0]],
+    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
+    # # '接口测试': [['api_test_task', 0]],
+    # '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
+    # 'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
+    # '函数工作流': [['new_fun_task', 0]],
+    # '使用API Explorer完在线调试': 'api_explorer_task',
+    # '使用API Explorer在线调试': 'api2_explorer_task',
+    # '使用Devstar生成代码工程': 'dev_star_task',
+    # '浏览Codelabs代码示例': 'view_code_task',
+    # '体验DevStar快速生成代码': 'fast_dev_star',
 }
 
 init_name_map = {
@@ -675,7 +675,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(3)
         # element_crawler = await self.task_page.$("#deleteRepocrawler")
         # element_phoenix_sample = await self.task_page.$("#deleteRepophoenix-sample")
-        while await self.task_page.querySelector("#deleteRepocrawler"):
+        while flag = await self.task_page.querySelector("#deleteRepocrawler"):
             await self.task_page.click('#deleteRepocrawler')
             await asyncio.sleep(1)
             await self.task_page.type('#rname', 'crawler')
@@ -684,7 +684,7 @@ class BaseHuaWei(BaseClient):
             self.logger.info("删除crawler")
             await asyncio.sleep(1)
 
-        while await self.task_page.querySelector("#deleteRepophoenix-sample"):
+        while flag = await self.task_page.querySelector("#deleteRepophoenix-sample"):
             await self.task_page.click('#deleteRepophoenix-sample')
             await asyncio.sleep(1)
             await self.task_page.type('#rname', 'phoenix-sample')
@@ -696,7 +696,28 @@ class BaseHuaWei(BaseClient):
 
     async def week_new_git(self):
         await asyncio.sleep(5)
-        await self.delete_codehub()
+        flag = await self.task_page.querySelector("#deleteRepocrawler"):
+        try: 
+            self.logger.info(flag)
+            while flag = await self.task_page.querySelector("#deleteRepocrawler"):
+                await self.task_page.click('#deleteRepocrawler')
+                await asyncio.sleep(1)
+                await self.task_page.type('#rname', 'crawler')
+                await asyncio.sleep(1)
+                await self.task_page.click('#deleteRepoSubmit')
+                self.logger.info("删除crawler")
+                await asyncio.sleep(1)
+
+            while flag = await self.task_page.querySelector("#deleteRepophoenix-sample"):
+                await self.task_page.click('#deleteRepophoenix-sample')
+                await asyncio.sleep(1)
+                await self.task_page.type('#rname', 'phoenix-sample')
+                await asyncio.sleep(1)
+                await self.task_page.click('#deleteRepoSubmit')
+                self.logger.info("删除phoenix-sample")
+                await asyncio.sleep(1)
+        except:
+            self.logger.error('wrong')
         no_data = await self.task_page.querySelector('.new-list .no-data')
         await self.task_page.waitForSelector('.pull-right', {'visible': True})
         await self.task_page.click('.toolbar-wrapper .devui-btn-primary')
