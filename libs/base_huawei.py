@@ -675,20 +675,22 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(3)
         # element_crawler = await self.task_page.$("#deleteRepocrawler")
         # element_phoenix_sample = await self.task_page.$("#deleteRepophoenix-sample")
-        while await self.task_page.$("#deleteRepocrawler"):
+        while await self.task_page.querySelector("#deleteRepocrawler"):
             await self.task_page.click('#deleteRepocrawler')
             await asyncio.sleep(1)
             await self.task_page.type('#rname', 'crawler')
             await asyncio.sleep(1)
             await self.task_page.click('#deleteRepoSubmit')
+            self.logger.info("删除crawler")
             await asyncio.sleep(1)
 
-        while await self.task_page.$("#deleteRepophoenix-sample"):
+        while await self.task_page.querySelector("#deleteRepophoenix-sample"):
             await self.task_page.click('#deleteRepophoenix-sample')
             await asyncio.sleep(1)
             await self.task_page.type('#rname', 'phoenix-sample')
             await asyncio.sleep(1)
             await self.task_page.click('#deleteRepoSubmit')
+            self.logger.info("删除phoenix-sample")
             await asyncio.sleep(1)
 
 
