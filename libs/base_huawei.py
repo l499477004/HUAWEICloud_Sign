@@ -699,7 +699,7 @@ class BaseHuaWei(BaseClient):
         flag = await self.task_page.querySelector("#deleteRepocrawler"):
         try: 
             self.logger.info(flag)
-            while flag = await self.task_page.querySelector("#deleteRepocrawler"):
+            while (flag = await self.task_page.querySelector("#deleteRepocrawler")):
                 await self.task_page.click('#deleteRepocrawler')
                 await asyncio.sleep(1)
                 await self.task_page.type('#rname', 'crawler')
@@ -708,7 +708,7 @@ class BaseHuaWei(BaseClient):
                 self.logger.info("删除crawler")
                 await asyncio.sleep(1)
 
-            while flag = await self.task_page.querySelector("#deleteRepophoenix-sample"):
+            while (flag = await self.task_page.querySelector("#deleteRepophoenix-sample")):
                 await self.task_page.click('#deleteRepophoenix-sample')
                 await asyncio.sleep(1)
                 await self.task_page.type('#rname', 'phoenix-sample')
