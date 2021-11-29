@@ -696,10 +696,11 @@ class BaseHuaWei(BaseClient):
 
     async def week_new_git(self):
         await asyncio.sleep(5)
-        flag = await self.task_page.querySelector("#deleteRepocrawler")
+        
         try: 
+            flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
             self.logger.info(flag)
-            while (flag = await self.task_page.querySelector("#deleteRepocrawler")):
+            while flag_crawler:
                 await self.task_page.click('#deleteRepocrawler')
                 await asyncio.sleep(1)
                 await self.task_page.type('#rname', 'crawler')
@@ -707,8 +708,9 @@ class BaseHuaWei(BaseClient):
                 await self.task_page.click('#deleteRepoSubmit')
                 self.logger.info("删除crawler")
                 await asyncio.sleep(1)
-
-            while (flag = await self.task_page.querySelector("#deleteRepophoenix-sample")):
+                flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
+            flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
+            while flag_phoenix_sample:
                 await self.task_page.click('#deleteRepophoenix-sample')
                 await asyncio.sleep(1)
                 await self.task_page.type('#rname', 'phoenix-sample')
@@ -716,6 +718,7 @@ class BaseHuaWei(BaseClient):
                 await self.task_page.click('#deleteRepoSubmit')
                 self.logger.info("删除phoenix-sample")
                 await asyncio.sleep(1)
+                flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
         except:
             self.logger.error('wrong')
         no_data = await self.task_page.querySelector('.new-list .no-data')
