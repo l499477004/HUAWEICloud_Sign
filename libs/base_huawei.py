@@ -671,32 +671,32 @@ class BaseHuaWei(BaseClient):
             await self.close()
             self.cancel = True
 
-    async def delete_codehub(self):
-        await asyncio.sleep(3)
-        # element_crawler = await self.task_page.$("#deleteRepocrawler")
-        # element_phoenix_sample = await self.task_page.$("#deleteRepophoenix-sample")
-        while flag = await self.task_page.querySelector("#deleteRepocrawler"):
-            await self.task_page.click('#deleteRepocrawler')
-            await asyncio.sleep(1)
-            await self.task_page.type('#rname', 'crawler')
-            await asyncio.sleep(1)
-            await self.task_page.click('#deleteRepoSubmit')
-            self.logger.info("删除crawler")
-            await asyncio.sleep(1)
+    # async def delete_codehub(self):
+    #     await asyncio.sleep(3)
+    #     # element_crawler = await self.task_page.$("#deleteRepocrawler")
+    #     # element_phoenix_sample = await self.task_page.$("#deleteRepophoenix-sample")
+    #     while flag = await self.task_page.querySelector("#deleteRepocrawler"):
+    #         await self.task_page.click('#deleteRepocrawler')
+    #         await asyncio.sleep(1)
+    #         await self.task_page.type('#rname', 'crawler')
+    #         await asyncio.sleep(1)
+    #         await self.task_page.click('#deleteRepoSubmit')
+    #         self.logger.info("删除crawler")
+    #         await asyncio.sleep(1)
 
-        while flag = await self.task_page.querySelector("#deleteRepophoenix-sample"):
-            await self.task_page.click('#deleteRepophoenix-sample')
-            await asyncio.sleep(1)
-            await self.task_page.type('#rname', 'phoenix-sample')
-            await asyncio.sleep(1)
-            await self.task_page.click('#deleteRepoSubmit')
-            self.logger.info("删除phoenix-sample")
-            await asyncio.sleep(1)
+    #     while flag = await self.task_page.querySelector("#deleteRepophoenix-sample"):
+    #         await self.task_page.click('#deleteRepophoenix-sample')
+    #         await asyncio.sleep(1)
+    #         await self.task_page.type('#rname', 'phoenix-sample')
+    #         await asyncio.sleep(1)
+    #         await self.task_page.click('#deleteRepoSubmit')
+    #         self.logger.info("删除phoenix-sample")
+    #         await asyncio.sleep(1)
 
 
     async def week_new_git(self):
         await asyncio.sleep(5)
-        flag = await self.task_page.querySelector("#deleteRepocrawler"):
+        flag = await self.task_page.querySelector("#deleteRepocrawler")
         try: 
             self.logger.info(flag)
             while (flag = await self.task_page.querySelector("#deleteRepocrawler")):
