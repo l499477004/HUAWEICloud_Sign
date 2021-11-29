@@ -325,7 +325,7 @@ class BaseHuaWei(BaseClient):
     async def week_new_compile_build(self):
         await asyncio.sleep(2)
         await self.task_page.waitForSelector('.devui-layout-main-content', {'visible': True})
-        await self.task_page.click('.devui-layout-main-content #create_new_task')
+        await self.task_page.click('#create_new_task')
         await asyncio.sleep(5)
         await self.task_page.click('div.step-footer div.button-group button.devui-btn-stress')
         await asyncio.sleep(5)
@@ -671,8 +671,30 @@ class BaseHuaWei(BaseClient):
             await self.close()
             self.cancel = True
 
+    async def delete_codehub(self):
+        await asyncio.sleep(3)
+        # element_crawler = await self.task_page.$("#deleteRepocrawler")
+        # element_phoenix_sample = await self.task_page.$("#deleteRepophoenix-sample")
+        while await self.task_page.$("#deleteRepocrawler"):
+            await self.task_page.click('#deleteRepocrawler')
+            await asyncio.sleep(1)
+            await self.task_page.type('#rname', 'crawler')
+            await asyncio.sleep(1)
+            await self.task_page.click('#deleteRepoSubmit')
+            await asyncio.sleep(1)
+
+        while await self.task_page.$("#deleteRepophoenix-sample"):
+            await self.task_page.click('#deleteRepophoenix-sample')
+            await asyncio.sleep(1)
+            await self.task_page.type('#rname', 'phoenix-sample')
+            await asyncio.sleep(1)
+            await self.task_page.click('#deleteRepoSubmit')
+            await asyncio.sleep(1)
+
+
     async def week_new_git(self):
         await asyncio.sleep(5)
+        await self.delete_codehub()
         no_data = await self.task_page.querySelector('.new-list .no-data')
         await self.task_page.waitForSelector('.pull-right', {'visible': True})
         await self.task_page.click('.toolbar-wrapper .devui-btn-primary')
