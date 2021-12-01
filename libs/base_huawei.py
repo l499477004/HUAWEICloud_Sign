@@ -698,11 +698,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         
         try: 
-            flag_crawler = await self.task_page.querySelector("#deleteRepocrawler1")
-            self.logger.info(flag_crawler)
-            flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
-            self.logger.info(flag_crawler)
-            while flag_crawler:
+            while flag_crawler != None:
                 await self.task_page.click('#deleteRepocrawler')
                 await asyncio.sleep(1)
                 await self.task_page.type('#rname', 'crawler')
@@ -712,7 +708,7 @@ class BaseHuaWei(BaseClient):
                 await asyncio.sleep(1)
                 flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
             flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
-            while flag_phoenix_sample:
+            while flag_phoenix_sample != None:
                 await self.task_page.click('#deleteRepophoenix-sample')
                 await asyncio.sleep(1)
                 await self.task_page.type('#rname', 'phoenix-sample')
