@@ -699,6 +699,7 @@ class BaseHuaWei(BaseClient):
         # self.logger.info(self.task_page.url)
         try: 
             flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
+            self.logger.info(len(flag_crawler))
             for i in range(len(flag_crawler)):
                 self.logger.info('start')
                 await flag_crawler[i].click()
