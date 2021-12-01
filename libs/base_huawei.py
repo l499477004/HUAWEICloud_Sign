@@ -699,24 +699,20 @@ class BaseHuaWei(BaseClient):
         # self.logger.info(self.task_page.url)
         try: 
             flag = await self.task_page.querySelector("div.new-list d-data-table table tbody tr:nth-child(6)")
-            self.logger.info(flag)
             while flag != None:
-                self.logger.info('start')
-                # await self.task_page.click('#deleteRepocrawler')
                 await self.task_page.evaluate(
                 '''() =>{ document.querySelector('div.new-list d-data-table table tbody tr:nth-child(6) td:nth-child(6) ul li:nth-child(3) button').click() }''')
                 await asyncio.sleep(1)
                 title = await self.task_page.Jeval('#deleteRepoDialog d-modal-container ng-component p:nth-child(2) span', "el => el.getAttribute('title')")
                 await self.task_page.type('#rname', title)
                 await asyncio.sleep(1)
-                # await self.task_page.click('#deleteRepoSubmit')
                 await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#deleteRepoSubmit #deleteRepoSubmit').click() }''')
                 self.logger.info("删除:" + title)
                 await asyncio.sleep(1)
                 flag = await self.task_page.querySelector("div.new-list d-data-table table tbody tr:nth-child(6)")
-        except:
-            self.logger.error('wrong')
+        except Exception as e:
+            self.logger.error(e)
 
         await asyncio.sleep(3)
         await self.task_page.reload()
