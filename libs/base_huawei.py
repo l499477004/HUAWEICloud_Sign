@@ -709,7 +709,7 @@ class BaseHuaWei(BaseClient):
                 await asyncio.sleep(1)
                 await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#deleteRepoSubmit #deleteRepoSubmit').click() }''')
-                self.logger.info("删除:" + title)
+                self.logger.info(str(i) + "删除:" + title)
                 await asyncio.sleep(2)
                 flag = await self.task_page.querySelector("div.new-list d-data-table table tbody tr:nth-child(6)")
                 i = i + 1
