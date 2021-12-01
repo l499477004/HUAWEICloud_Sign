@@ -698,6 +698,8 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         
         try: 
+            flag_crawler = await self.task_page.querySelector("#deleteRepocrawler1")
+            self.logger.info(flag_crawler)
             flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
             self.logger.info(flag_crawler)
             while flag_crawler:
@@ -721,6 +723,7 @@ class BaseHuaWei(BaseClient):
                 flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
         except:
             self.logger.error('wrong')
+
         no_data = await self.task_page.querySelector('.new-list .no-data')
         await self.task_page.waitForSelector('.pull-right', {'visible': True})
         await self.task_page.click('.toolbar-wrapper .devui-btn-primary')
