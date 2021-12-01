@@ -700,32 +700,37 @@ class BaseHuaWei(BaseClient):
         try: 
             flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
             self.logger.info(flag_crawler)
+            tag_crawler = ''
             while flag_crawler != None:
-                self.logger.info('start')
-                # await self.task_page.click('#deleteRepocrawler')
-                await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#deleteRepocrawler').click() }''')
-                await asyncio.sleep(1)
-                self.logger.info('rname')
-                await self.task_page.type('#rname', 'crawler')
-                await asyncio.sleep(1)
-                self.logger.info('submit')
-                # await self.task_page.click('#deleteRepoSubmit')
-                await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#deleteRepoSubmit').click() }''')
-                self.logger.info("删除crawler")
-                await asyncio.sleep(1)
-                flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
-            flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
-            while flag_phoenix_sample != None:
-                await self.task_page.click('#deleteRepophoenix-sample')
-                await asyncio.sleep(1)
-                await self.task_page.type('#rname', 'phoenix-sample')
-                await asyncio.sleep(1)
-                await self.task_page.click('#deleteRepoSubmit')
-                self.logger.info("删除phoenix-sample")
-                await asyncio.sleep(1)
-                flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
+                if tag_crawler != flag_crawler:
+                    self.logger.info('start')
+                    # await self.task_page.click('#deleteRepocrawler')
+                    await self.task_page.evaluate(
+                    '''() =>{ document.querySelector('#deleteRepocrawler').click() }''')
+                    await asyncio.sleep(1)
+                    self.logger.info('rname')
+                    await self.task_page.type('#rname', 'crawler')
+                    await asyncio.sleep(1)
+                    self.logger.info('submit')
+                    # await self.task_page.click('#deleteRepoSubmit')
+                    await self.task_page.evaluate(
+                    '''() =>{ document.querySelector('#deleteRepoSubmit').click() }''')
+                    self.logger.info("删除crawler")
+                    await asyncio.sleep(1)
+                    tag_crawler = flag_crawler
+                    flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
+                else:
+                    break
+            # flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
+            # while flag_phoenix_sample != None:
+            #     await self.task_page.click('#deleteRepophoenix-sample')
+            #     await asyncio.sleep(1)
+            #     await self.task_page.type('#rname', 'phoenix-sample')
+            #     await asyncio.sleep(1)
+            #     await self.task_page.click('#deleteRepoSubmit')
+            #     self.logger.info("删除phoenix-sample")
+            #     await asyncio.sleep(1)
+            #     flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
         except:
             self.logger.error('wrong')
 
