@@ -696,8 +696,9 @@ class BaseHuaWei(BaseClient):
 
     async def week_new_git(self):
         await asyncio.sleep(5)
-        
+        # self.logger.info(self.task_page.url)
         try: 
+            flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
             while flag_crawler != None:
                 await self.task_page.click('#deleteRepocrawler')
                 await asyncio.sleep(1)
