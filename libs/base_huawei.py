@@ -707,7 +707,7 @@ class BaseHuaWei(BaseClient):
                 '''() =>{ document.querySelector('div.new-list d-data-table table tbody tr:nth-child(6) td:nth-child(6) ul li:nth-child(3) button').click() }''')
                 await asyncio.sleep(1)
                 self.logger.info('rname')
-                title = wait self.task_page.Jeval('#deleteRepoDialog d-modal-container ng-component p:nth-child(2) span', "el => el.getAttribute('title')")
+                title = await self.task_page.Jeval('#deleteRepoDialog d-modal-container ng-component p:nth-child(2) span', "el => el.getAttribute('title')")
                 await self.task_page.type('#rname', title)
                 await asyncio.sleep(1)
                 self.logger.info('submit')
