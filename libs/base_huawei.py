@@ -699,11 +699,15 @@ class BaseHuaWei(BaseClient):
         # self.logger.info(self.task_page.url)
         try: 
             flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
+            self.logger.info(flag_crawler)
             while flag_crawler != None:
+                self.logger.info('start')
                 await self.task_page.click('#deleteRepocrawler')
                 await asyncio.sleep(1)
+                self.logger.info('rname')
                 await self.task_page.type('#rname', 'crawler')
                 await asyncio.sleep(1)
+                self.logger.info('submit')
                 await self.task_page.click('#deleteRepoSubmit')
                 self.logger.info("删除crawler")
                 await asyncio.sleep(1)
