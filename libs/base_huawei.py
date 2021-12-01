@@ -712,11 +712,11 @@ class BaseHuaWei(BaseClient):
                 await asyncio.sleep(1)
                 flag = await self.task_page.querySelector("div.new-list d-data-table table tbody tr:nth-child(6)")
         except Exception as e:
-            self.logger.error(e)
+            self.logger.warning(e)
 
         await asyncio.sleep(3)
-        await self.task_page.reload()
-        await asyncio.sleep(6)
+        # await self.task_page.reload()
+        # await asyncio.sleep(6)
         no_data = await self.task_page.querySelector('.new-list .no-data')
         await self.task_page.waitForSelector('.pull-right', {'visible': True})
         await self.task_page.click('.toolbar-wrapper .devui-btn-primary')
