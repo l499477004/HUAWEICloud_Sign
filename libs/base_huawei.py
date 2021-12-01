@@ -698,37 +698,26 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(5)
         # self.logger.info(self.task_page.url)
         try: 
-            flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
-            self.logger.info(len(flag_crawler))
-            for i in range(len(flag_crawler)):
+            flag = await self.task_page.querySelector("div.new-list d-data-table table tbody tr:nth-child(6)")
+            self.logger.info(flag)
+            while flag != None:
                 self.logger.info('start')
-                await flag_crawler[i].click()
+                # await self.task_page.click('#deleteRepocrawler')
+                await self.task_page.evaluate(
+                '''() =>{ document.querySelector('div.new-list d-data-table table tbody tr:nth-child(6) td:nth-child(6) ul li:nth-child(3) button').click() }''')
                 await asyncio.sleep(1)
                 self.logger.info('rname')
-                await self.task_page.type('#rname', 'crawler')
+                title = wait self.task_page.Jeval('#deleteRepoDialog d-modal-container ng-component p:nth-child(2) span', "el => el.getAttribute('title')")
+                await self.task_page.type('#rname', title)
                 await asyncio.sleep(1)
                 self.logger.info('submit')
                 # await self.task_page.click('#deleteRepoSubmit')
                 await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#deleteRepoSubmit').click() }''')
-                self.logger.info("删除crawler")
+                '''() =>{ document.querySelector('#deleteRepoSubmit #deleteRepoSubmit').click() }''')
+                self.logger.info("删除:" + title)
                 await asyncio.sleep(1)
-            # while flag_crawler != None:
-            #     self.logger.info('start')
-            #     # await self.task_page.click('#deleteRepocrawler')
-            #     await self.task_page.evaluate(
-            #     '''() =>{ document.querySelector('#deleteRepocrawler').click() }''')
-            #     await asyncio.sleep(1)
-            #     self.logger.info('rname')
-            #     await self.task_page.type('#rname', 'crawler')
-            #     await asyncio.sleep(1)
-            #     self.logger.info('submit')
-            #     # await self.task_page.click('#deleteRepoSubmit')
-            #     await self.task_page.evaluate(
-            #     '''() =>{ document.querySelector('#deleteRepoSubmit').click() }''')
-            #     self.logger.info("删除crawler")
-            #     await asyncio.sleep(1)
-            #     flag_crawler = await self.task_page.querySelector("#deleteRepocrawler")
+                flag = await self.task_page.querySelector("div.new-list d-data-table table tbody tr:nth-child(6)")
+                self.logger.info(flag)
             # flag_phoenix_sample = await self.task_page.querySelector("#deleteRepophoenix-sample")
             # while flag_phoenix_sample != None:
             #     await self.task_page.click('#deleteRepophoenix-sample')
