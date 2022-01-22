@@ -273,9 +273,9 @@ class BaseHuaWei(BaseClient):
 
     async def open_code_task(self):
         await asyncio.sleep(5)
-        codehubUrl = 'https://devcloud.cn-north-4.huaweicloud.com/codehub/home'
-        await self.task_page.goto(codehubUrl, {'waitUntil': 'load'})
-        await asyncio.sleep(5)
+        # codehubUrl = 'https://devcloud.cn-north-4.huaweicloud.com/codehub/home'
+        # await self.task_page.goto(codehubUrl, {'waitUntil': 'load'})
+        # await asyncio.sleep(5)
         await self.task_page.click('#repoNamephoenix-sample')
         await asyncio.sleep(5)
         await self.task_page.evaluate(
@@ -531,7 +531,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(3)
         # 修改时间：2021年10月15日15:01:51
         # await self.task_page.click('.devui-table tbody tr:nth-child(1) td:nth-child(6) #rf-task-execute')
-        await self.task_page.click('#rf-task-execute')
+        await self.task_page.click('#cdk-overlay-0 > div > ul > li:nth-child(1) > a > div')
         await asyncio.sleep(3)
 
     async def run_test(self):
@@ -1022,7 +1022,7 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(3)
 
         
-        await self.new_new_api_task()
+        await self.remove_api_task()
 
     async def new_fun_task(self):
         url = self.task_page.url
@@ -1032,7 +1032,7 @@ class BaseHuaWei(BaseClient):
 
         await asyncio.sleep(2)
         try:
-            await self.task_page.click('#rightWrap .ant-row .ant-btn')
+            await self.task_page.click('#\\31 ')
             await asyncio.sleep(3)
             await self.task_page.type('#name', ''.join(random.choices(string.ascii_letters, k=6)), {'delay': 30})
             await asyncio.sleep(3)
