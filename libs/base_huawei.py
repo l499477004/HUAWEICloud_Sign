@@ -1034,9 +1034,9 @@ class BaseHuaWei(BaseClient):
         try:
             await self.task_page.click('#\\31 ')
             await asyncio.sleep(3)
-            await self.task_page.type('#name', ''.join(random.choices(string.ascii_letters, k=6)), {'delay': 30})
+            await self.task_page.type('#base-create-inputs-functionName', ''.join(random.choices(string.ascii_letters, k=6)), {'delay': 30})
             await asyncio.sleep(3)
-            await self.task_page.click('.preview .ant-btn-primary')
+            await self.task_page.click('#function-create-id tp-buylayer-right span button')
             await asyncio.sleep(5)
         except Exception as e:
             self.logger.warning(e)
