@@ -29,7 +29,7 @@ name_map = {
     # '浏览Codelabs代码示例': 'view_code_task',
     # '体验DevStar快速生成代码': 'fast_dev_star',
     # '代码托管': [['week_new_git', 0]],
-    'APIG网关': [['new_new_api_task', 0]],
+    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
 }
 
 init_name_map = {
@@ -981,13 +981,8 @@ class BaseHuaWei(BaseClient):
     async def new_new_api_task(self):
         await asyncio.sleep(15)
         # 调试API
-        urlHeader = self.task_page.url.split("groupDetail")
-        self.logger.info(urlHeader)
-        await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
-        await asyncio.sleep(8)
-        controlUrl = self.task_page.url
-        self.logger.info(controlUrl)
-        await self.remove_api_task()
+        urlHeader1 = self.task_page.url.split("groupDetail")
+        self.logger.info(urlHeader1)
         try:
             await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#contentcontent_fugwff > div:nth-child(2) > div.ac-cloud-content > div > div.create-header-content > div.ac-pdTop-lg.ac-pdBottom-lg.ac-pdLeft-lg.ac-pdRight-lg > div > span > button').click() }''')
@@ -1001,7 +996,13 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(2)
         # await self.task_page.click('div.ti-modal-header ti-close')
         # await asyncio.sleep(1)
-        
+        urlHeader = self.task_page.url.split("groupDetail")
+        self.logger.info(urlHeader)
+        await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
+        await asyncio.sleep(8)
+        controlUrl = self.task_page.url
+        self.logger.info(controlUrl)
+        await self.remove_api_task()
 
     async def run_api_task(self):
         await asyncio.sleep(3)
