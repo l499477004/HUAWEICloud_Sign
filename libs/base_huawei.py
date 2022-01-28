@@ -11,24 +11,25 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
-    'CloudIDE': [['open_ide_task', 0]],
-    '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
-    '发布': [['upload_task', 0]],
-    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
-    '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
-    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
-    '函数工作流': [['new_fun_task', 0]],
-    '使用API Explorer完在线调试': 'api_explorer_task',
-    '使用API Explorer在线调试': 'api2_explorer_task',
-    '使用Devstar生成代码工程': 'dev_star_task',
-    '浏览Codelabs代码示例': 'view_code_task',
-    '体验DevStar快速生成代码': 'fast_dev_star',
+    # '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    # '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
+    # 'CloudIDE': [['open_ide_task', 0]],
+    # '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
+    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    # '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
+    # '发布': [['upload_task', 0]],
+    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
+    # '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
+    # 'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
+    # '函数工作流': [['new_fun_task', 0]],
+    # '使用API Explorer完在线调试': 'api_explorer_task',
+    # '使用API Explorer在线调试': 'api2_explorer_task',
+    # '使用Devstar生成代码工程': 'dev_star_task',
+    # '浏览Codelabs代码示例': 'view_code_task',
+    # '体验DevStar快速生成代码': 'fast_dev_star',
     # '代码托管': [['week_new_git', 0]],
+    'APIG网关': [['new_new_api_task', 0]],
 }
 
 init_name_map = {
@@ -278,7 +279,9 @@ class BaseHuaWei(BaseClient):
         # await self.task_page.goto(codehubUrl, {'waitUntil': 'load'})
         # await asyncio.sleep(5)
         self.logger.info("进入phoenix-sample代码仓")
-        await self.task_page.click('#repoNamephoenix-sample')
+        await self.task_page.evaluate(
+                '''() =>{ document.querySelector("#app-devcloud-frameworks > div > ng-component > ng-component > div.devui-layout-main-content.devui-layout-main-content-banner.ng-star-inserted > repo-list > div > div.new-list > d-data-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1) > div > div > div > a:nth-child(3)").click(); }''')
+        # await self.task_page.click('#repoNamephoenix-sample')
         await asyncio.sleep(5)
         self.logger.info("进入CloudIDE")
         await self.task_page.evaluate(
@@ -478,7 +481,7 @@ class BaseHuaWei(BaseClient):
         await self.task_page.evaluate(
             '''() =>{ document.querySelector('#app-devcloud-frameworks > div > ng-component > div > template-form > div > form > deploy-step > div > div.operation-box__plugins-list.ng-star-inserted > extend-plugins-render > div > extend-plugins-list > div.task-detail-cardlist.fn-clear-float > div:nth-child(1) > div.btn-wrapper > span').click(); }''')
         await asyncio.sleep(1)
-
+        self.logger.info("新建主机组")
         title_elements = await self.task_page.Jx('//*[@id="DeploymentGroup_groupId"]/label/div/div/span/span[3]/span/a')
         newHostGroupUrl = ""
         for item in title_elements:
@@ -493,17 +496,18 @@ class BaseHuaWei(BaseClient):
             await page.evaluate(
                 '''() =>{ document.querySelector('div.btn-box button.devui-btn-primary').click(); }''')
             await asyncio.sleep(3)
+            self.logger.info("添加主机")
             await page.click("div.btn-group d-button:nth-child(2) button.devui-btn-primary")
             await asyncio.sleep(3)
             await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(3) > div.ext-form-item-content > input', "linux")
             await asyncio.sleep(1)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(5) > div.ext-form-item-content > input', "" + self.serverIP)
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(6) > div.ext-form-item-content > input', "" + self.serverIP)# div:nth-child(5)
             await asyncio.sleep(1)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(13) > div.ext-form-item-content > input', "user"+self.username)
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(14) > div.ext-form-item-content > input', "user"+self.username)# div:nth-child(13)
             await asyncio.sleep(1)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(14) > div.ext-form-item-content > d-form-control > div.devui-form-control-container > input', self.password)
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(15) > div.ext-form-item-content > d-form-control > div.devui-form-control-container > input', self.password)# div:nth-child(14)
             await asyncio.sleep(1)
-            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(15) > div.ext-form-item-content > input', "22")
+            await page.type('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > div:nth-child(16) > div.ext-form-item-content > input', "22")# div:nth-child(15)
             await asyncio.sleep(1)
             await page.evaluate(
                 '''() =>{ document.querySelector('#addHostDialog > div > div > d-modal-container > div > div > div > ng-component > div > label > d-checkbox > div > label > span').click(); }''')
@@ -977,18 +981,6 @@ class BaseHuaWei(BaseClient):
     async def new_new_api_task(self):
         await asyncio.sleep(15)
         # 调试API
-        try:
-            await self.task_page.evaluate(
-                '''() =>{ document.querySelector('#contentcontent_fugwff > div:nth-child(2) > div.ac-cloud-content > div > div.create-header-content > div.ac-pdTop-lg.ac-pdBottom-lg.ac-pdLeft-lg.ac-pdRight-lg > div > span > button').click() }''')
-            await asyncio.sleep(3)
-            await self.task_page.evaluate(
-                '''() =>{ document.querySelector('body > div.ti-intro-tip-flag.ng-isolate-scope.ti-tooltip.ti-intro-tip-modal.ti-tooltip-top-left > div.ti-tooltip-content.ti-intro-tooltip-content.ng-scope > ti-intro-content > div > div.ti-modal-footer > div > button').click() }''')
-            await asyncio.sleep(3)
-        except Exception as e:
-            self.logger.info('none')
-            await asyncio.sleep(2)
-        # await self.task_page.click('div.ti-modal-header ti-close')
-        # await asyncio.sleep(1)
         urlHeader = self.task_page.url.split("groupDetail")
         self.logger.info(urlHeader)
         await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
@@ -996,6 +988,20 @@ class BaseHuaWei(BaseClient):
         controlUrl = self.task_page.url
         self.logger.info(controlUrl)
         await self.remove_api_task()
+        try:
+            await self.task_page.evaluate(
+                '''() =>{ document.querySelector('#contentcontent_fugwff > div:nth-child(2) > div.ac-cloud-content > div > div.create-header-content > div.ac-pdTop-lg.ac-pdBottom-lg.ac-pdLeft-lg.ac-pdRight-lg > div > span > button').click() }''')
+            await asyncio.sleep(3)
+            await self.task_page.evaluate(
+                '''() =>{ document.querySelector('body > div.ti-intro-tip-flag.ng-isolate-scope.ti-tooltip.ti-intro-tip-modal.ti-tooltip-top-left > div.ti-tooltip-content.ti-intro-tooltip-content.ng-scope > ti-intro-content > div > div.ti-modal-footer > div > button').click() }''')
+            await asyncio.sleep(3)
+            self.logger.info('success')
+        except Exception as e:
+            self.logger.info('none')
+            await asyncio.sleep(2)
+        # await self.task_page.click('div.ti-modal-header ti-close')
+        # await asyncio.sleep(1)
+        
 
     async def run_api_task(self):
         await asyncio.sleep(3)
