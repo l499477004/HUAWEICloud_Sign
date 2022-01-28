@@ -11,25 +11,24 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    # '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    # '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
-    # 'CloudIDE': [['open_ide_task', 0]],
-    # '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    # '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
-    # '发布': [['upload_task', 0]],
-    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    # '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
-    # '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
-    # 'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
-    # '函数工作流': [['new_fun_task', 0]],
-    # '使用API Explorer完在线调试': 'api_explorer_task',
-    # '使用API Explorer在线调试': 'api2_explorer_task',
-    # '使用Devstar生成代码工程': 'dev_star_task',
-    # '浏览Codelabs代码示例': 'view_code_task',
-    # '体验DevStar快速生成代码': 'fast_dev_star',
-    # '代码托管': [['week_new_git', 0]],
+    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
+    'CloudIDE': [['open_ide_task', 0]],
+    '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
+    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
+    '发布': [['upload_task', 0]],
+    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
+    '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
     'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
+    '函数工作流': [['new_fun_task', 0]],
+    '使用API Explorer完在线调试': 'api_explorer_task',
+    '使用API Explorer在线调试': 'api2_explorer_task',
+    '使用Devstar生成代码工程': 'dev_star_task',
+    '浏览Codelabs代码示例': 'view_code_task',
+    '体验DevStar快速生成代码': 'fast_dev_star',
+    # '代码托管': [['week_new_git', 0]],
 }
 
 init_name_map = {
@@ -981,8 +980,17 @@ class BaseHuaWei(BaseClient):
     async def new_new_api_task(self):
         await asyncio.sleep(15)
         # 调试API
-        urlHeader1 = self.task_page.url.split("groupDetail")
-        self.logger.info(urlHeader1)
+        urlHeaderKey = self.task_page.url.split("/")
+        lenth = len(urlHeaderKey)-1
+        if urlHeaderKey[lenth] == "apilist":
+            urlHeader = self.task_page.url.split("groupDetail")
+            self.logger.info(urlHeader)
+            await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
+            await asyncio.sleep(8)
+            controlUrl = self.task_page.url
+            self.logger.info(controlUrl)
+            await self.remove_api_task()
+
         try:
             await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#contentcontent_fugwff > div:nth-child(2) > div.ac-cloud-content > div > div.create-header-content > div.ac-pdTop-lg.ac-pdBottom-lg.ac-pdLeft-lg.ac-pdRight-lg > div > span > button').click() }''')
@@ -996,13 +1004,7 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(2)
         # await self.task_page.click('div.ti-modal-header ti-close')
         # await asyncio.sleep(1)
-        urlHeader = self.task_page.url.split("groupDetail")
-        self.logger.info(urlHeader)
-        await self.task_page.goto(urlHeader[0] + "multiLogical/openapi/list", {'waitUntil': 'load'})
-        await asyncio.sleep(8)
-        controlUrl = self.task_page.url
-        self.logger.info(controlUrl)
-        await self.remove_api_task()
+        
 
     async def run_api_task(self):
         await asyncio.sleep(3)
