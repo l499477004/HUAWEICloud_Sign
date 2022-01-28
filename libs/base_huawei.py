@@ -272,15 +272,21 @@ class BaseHuaWei(BaseClient):
         # await asyncio.sleep(2)
 
     async def open_code_task(self):
+        self.logger.info("开始cloudIDE打开代码任务")
         await asyncio.sleep(5)
         # codehubUrl = 'https://devcloud.cn-north-4.huaweicloud.com/codehub/home'
         # await self.task_page.goto(codehubUrl, {'waitUntil': 'load'})
         # await asyncio.sleep(5)
+        self.logger.info("代码仓库：" + await self.task_page.url)
+        self.logger.info("进入phoenix-sample代码仓")
         await self.task_page.click('#repoNamephoenix-sample')
         await asyncio.sleep(5)
+        self.logger.info("phoneix-sample：" + await self.task_page.url)
+        self.logger.info("进入CloudIDE")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#codehub-main-content > app-repo-header > div > div > div.repo-info-right.ng-star-inserted > operate-btn-header > ul > li:nth-child(4) > d-button > button').click(); }''')
-        await asyncio.sleep(60)
+        await asyncio.sleep(5)
+        self.logger.info("CloudIDE：" + await self.task_page.url)
 
         # 原作者代码，已失效
         # items = await self.task_page.querySelectorAll('div.devui-table-view tbody tr')
@@ -528,11 +534,17 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(1)
 
     async def deploy_task(self):
-        await asyncio.sleep(3)
+        self.logger.info("开始执行部署任务")
+        await asyncio.sleep(5)
+        self.logger.info("部署：" + await self.task_page.url)
         # 修改时间：2021年10月15日15:01:51
         # await self.task_page.click('.devui-table tbody tr:nth-child(1) td:nth-child(6) #rf-task-execute')
-        await self.task_page.click('#cdk-overlay-0 > div > ul > li:nth-child(1) > a > div')
+        self.logger.info("点击菜单")
+        await self.task_page.click('#table_more_operate_btn')
+        self.logger.info("点击运行")
+        await self.task_page.click('#cdk-overlay-0 > div > ul > li:nth-child(1) > a > div > span')
         await asyncio.sleep(3)
+        self.logger.info("任务完成")
 
     async def run_test(self):
         await self._close_test()
@@ -986,7 +998,7 @@ class BaseHuaWei(BaseClient):
         await asyncio.sleep(8)
         controlUrl = self.task_page.url
         self.logger.info(controlUrl)
-        # await self.remove_api_task()
+        await self.remove_api_task()
 
     async def run_api_task(self):
         await asyncio.sleep(3)
@@ -1022,7 +1034,7 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(3)
 
         
-        await self.remove_api_task()
+        # await self.remove_api_task()
 
     async def new_fun_task(self):
         url = self.task_page.url
