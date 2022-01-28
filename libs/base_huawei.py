@@ -277,16 +277,13 @@ class BaseHuaWei(BaseClient):
         # codehubUrl = 'https://devcloud.cn-north-4.huaweicloud.com/codehub/home'
         # await self.task_page.goto(codehubUrl, {'waitUntil': 'load'})
         # await asyncio.sleep(5)
-        self.logger.info("代码仓库：" + url1 = await self.task_page.url)
         self.logger.info("进入phoenix-sample代码仓")
         await self.task_page.click('#repoNamephoenix-sample')
         await asyncio.sleep(5)
-        self.logger.info("phoneix-sample：" + url1 = await self.task_page.url)
         self.logger.info("进入CloudIDE")
         await self.task_page.evaluate(
                 '''() =>{ document.querySelector('#codehub-main-content > app-repo-header > div > div > div.repo-info-right.ng-star-inserted > operate-btn-header > ul > li:nth-child(4) > d-button > button').click(); }''')
         await asyncio.sleep(5)
-        self.logger.info("CloudIDE：" + url1 = await self.task_page.url)
 
         # 原作者代码，已失效
         # items = await self.task_page.querySelectorAll('div.devui-table-view tbody tr')
@@ -536,7 +533,7 @@ class BaseHuaWei(BaseClient):
     async def deploy_task(self):
         self.logger.info("开始执行部署任务")
         await asyncio.sleep(5)
-        self.logger.info("部署：" + url1 = await self.task_page.url)
+        self.logger.info("部署：")
         # 修改时间：2021年10月15日15:01:51
         # await self.task_page.click('.devui-table tbody tr:nth-child(1) td:nth-child(6) #rf-task-execute')
         self.logger.info("点击菜单")
