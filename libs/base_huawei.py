@@ -60,12 +60,16 @@ class BaseHuaWei(BaseClient):
         if self.page.url != self.url:
             await self.page.goto(self.url, {'waitUntil': 'load'})
 
-        id_list = ['experience-missions', 'middleware-missions']
-        for _id in id_list:
-            try:
-                await self.execute(_id, 'ul.devui-nav li.ng-star-inserted', '', True, name_map)
-            except Exception as e:
-                self.logger.debug(e)
+        # id_list = ['experience-missions', 'middleware-missions']
+        # for _id in id_list:
+        #     try:
+        #         await self.execute(_id, 'ul.devui-nav li.ng-star-inserted', '', True, name_map)
+        #     except Exception as e:
+        #         self.logger.debug(e)
+        try:
+            await self.execute('experience-missions', 'ul.devui-nav li.ng-star-inserted', '', True, name_map)
+        except Exception as e:
+            self.logger.debug(e)
 
         try:
             await self.regular()
@@ -95,7 +99,9 @@ class BaseHuaWei(BaseClient):
 
             if is_tab:
                 name = str(await element.Jeval('a', 'el => el.textContent')).strip()
+                self.logger.info('测试' + name)
                 task_list = task_map.get(name)
+                self.logger.info('测试' + task_list)
                 if task_list is None:
                     continue
 
@@ -104,10 +110,12 @@ class BaseHuaWei(BaseClient):
                     await asyncio.sleep(1)
                     #task_node = f'#{element_id} #{element_id}-{task[1]}'
                     task_node = f'#{element_id}-{task[1]}'
+                    self.logger.info('task_name' + task_node)
                     await self.run_task(task_node, task[0])
             else:
                 _task_node = f'#{element_id} #{task_node}{i}'
                 task_name = str(await self.page.Jeval(f'{_task_node} h5', 'el => el.textContent')).strip()
+                self.logger.info('task_name1' + task_node)
                 self.resultsJSON[f'{task_name}'] = 'NODONE'
                 if not task_map.get(task_name):
                     continue
