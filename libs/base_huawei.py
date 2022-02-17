@@ -201,7 +201,7 @@ class BaseHuaWei(BaseClient):
             await self.task_page.goto("https://devcloud.huaweicloud.com/bonususer/home/converge", {'waitUntil': 'load'})
             await asyncio.sleep(5)
             info = await self.page.Jeval(
-                '#homeheader-coins > span.bonus-count.red',
+                '#homeheader-coins span.bonus-count.red',
                 'el => el.textContent')
             sign_txt = str(info).strip()
             self.logger.info(sign_txt)
