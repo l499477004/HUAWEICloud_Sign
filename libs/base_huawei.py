@@ -102,7 +102,8 @@ class BaseHuaWei(BaseClient):
                 for task in task_list:
                     await element.click()
                     await asyncio.sleep(1)
-                    task_node = f'#{element_id} #{element_id}-{task[1]}'
+                    #task_node = f'#{element_id} #{element_id}-{task[1]}'
+                    task_node = f'#{element_id}-{task[1]}'
                     await self.run_task(task_node, task[0])
             else:
                 _task_node = f'#{element_id} #{task_node}{i}'
