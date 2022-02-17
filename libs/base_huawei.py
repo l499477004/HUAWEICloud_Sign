@@ -215,7 +215,7 @@ class BaseHuaWei(BaseClient):
 
     async def get_new_page(self):
         await asyncio.sleep(2)
-        await self.page.click('.modal.in .modal-footer .devui-btn')
+        await self.page.click('#do-task > button')
         await asyncio.sleep(5)
         page_list = await self.browser.pages()
         await page_list[-1].setViewport({'width': self.width + 560, 'height': self.height})
