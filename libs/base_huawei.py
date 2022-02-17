@@ -63,7 +63,7 @@ class BaseHuaWei(BaseClient):
         id_list = ['experience-missions', 'middleware-missions']
         for _id in id_list:
             try:
-                await self.execute(_id, '#devuiTabs1', '', True, name_map)
+                await self.execute(_id, 'ul.devui-nav li.ng-star-inserted', '', True, name_map)
             except Exception as e:
                 self.logger.debug(e)
 
@@ -215,7 +215,7 @@ class BaseHuaWei(BaseClient):
 
     async def get_new_page(self):
         await asyncio.sleep(2)
-        await self.page.click('#do-task > button')
+        await self.page.click('.modal.in .modal-footer .devui-btn')
         await asyncio.sleep(5)
         page_list = await self.browser.pages()
         await page_list[-1].setViewport({'width': self.width + 560, 'height': self.height})
