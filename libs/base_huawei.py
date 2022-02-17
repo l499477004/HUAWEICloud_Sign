@@ -83,7 +83,7 @@ class BaseHuaWei(BaseClient):
     async def init_account(self):
         # await self.execute('experience-missions', 'ul.devui-nav li.ng-star-inserted', '', True, init_name_map)
 
-        await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/new', {'waitUntil': 'load'})
+        await self.page.goto('https://devcloud.huaweicloud.com/bonususer/home/makebonus', {'waitUntil': 'load'})
         await asyncio.sleep(2)
         await self.execute('new-tasks-box', 'li.hot-task-item', 'new-task', False, init_name_map)
 
