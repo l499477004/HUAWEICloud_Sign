@@ -11,23 +11,23 @@ from pyppeteer.network_manager import Response
 from libs.base import BaseClient
 
 name_map = {
-    '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
-    '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
-    'CloudIDE': [['open_ide_task', 0]],
-    '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
-    '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
-    '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
-    '发布': [['upload_task', 0]],
-    '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
-    '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
-    '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
-    'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
-    '函数工作流': [['new_fun_task', 0]],
-    '使用API Explorer完在线调试': 'api_explorer_task',
-    '使用API Explorer在线调试': 'api2_explorer_task',
-    '使用Devstar生成代码工程': 'dev_star_task',
-    '浏览Codelabs代码示例': 'view_code_task',
-    '体验DevStar快速生成代码': 'fast_dev_star',
+    # '项目管理': [['week_new_project', 0], ['week_new_member', 1], ['new_work_project', 2]],
+    # '代码托管': [['week_new_git', 0], ['open_code_task', 1], ['push_code_task', 2]],
+    # 'CloudIDE': [['open_ide_task', 0]],
+    # '代码检查': [['week_new_code_check', 0], ['check_code_task', 1]],
+    # '编译构建': [['week_new_compile_build', 0], ['compile_build_task', 1]],
+    # '部署': [['week_new_deploy_task', 0], ['deploy_task', 1]],
+    # '发布': [['upload_task', 0]],
+    # '流水线': [['week_new_pipeline', 0], ['pipeline_task', 1]],
+    # '接口测试': [['week_new_api_test_task', 0], ['api_test_task', 1]],
+    # '测试管理': [['new_test_task', 0], ['run_test_task', 1]],
+    # 'APIG网关': [['new_new_api_task', 0], ['run_api_task', 1], ['debug_api_task', 2]],
+    # '函数工作流': [['new_fun_task', 0]],
+    # '使用API Explorer完在线调试': 'api_explorer_task',
+    # '使用API Explorer在线调试': 'api2_explorer_task',
+    # '使用Devstar生成代码工程': 'dev_star_task',
+    # '浏览Codelabs代码示例': 'view_code_task',
+    # '体验DevStar快速生成代码': 'fast_dev_star',
     # '代码托管': [['week_new_git', 0]],
 }
 
@@ -186,7 +186,9 @@ class BaseHuaWei(BaseClient):
             await asyncio.sleep(5)
 
             try:
-                s = await self.page.Jeval('#homeheader-coins', 'el => el.textContent')
+                await asyncio.sleep(5)
+                await self.task_page.goto("https://devcloud.huaweicloud.com/bonususer/home/converge", {'waitUntil': 'load'})
+                s = await self.page.Jeval('#homeheader-coins > span.bonus-count.red', 'el => el.textContent')
                 result['码豆'] = str(s).replace('码豆', '').strip()
                 self.resultsJSON['码豆'] = str(s).replace('码豆', '').strip()
                 break
@@ -195,13 +197,12 @@ class BaseHuaWei(BaseClient):
         return result
 
     async def sign_task(self):
-
         try:
             await asyncio.sleep(5)
             await self.task_page.goto("https://devcloud.huaweicloud.com/bonususer/home/converge", {'waitUntil': 'load'})
             await asyncio.sleep(5)
             info = await self.page.Jeval(
-                '#homeheader-coins span.bonus-count.red',
+                '#homeheader-signin span.button-content, #homeheader-signined span.button-content',
                 'el => el.textContent')
             sign_txt = str(info).strip()
             self.logger.info(sign_txt)
